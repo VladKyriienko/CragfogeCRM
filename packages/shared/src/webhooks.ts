@@ -9,12 +9,7 @@ export const webhookEventSchema = z.enum([
 ]);
 export type WebhookEvent = z.infer<typeof webhookEventSchema>;
 
-export const webhookDeliveryStatusSchema = z.enum([
-  'pending',
-  'delivering',
-  'succeeded',
-  'failed',
-]);
+export const webhookDeliveryStatusSchema = z.enum(['pending', 'delivering', 'succeeded', 'failed']);
 export type WebhookDeliveryStatus = z.infer<typeof webhookDeliveryStatusSchema>;
 
 export const createWebhookBodySchema = z.object({

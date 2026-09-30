@@ -77,8 +77,7 @@ export class IndexJobsService implements OnModuleInit, OnModuleDestroy {
     if (!/^[a-z][a-z0-9_]*$/.test(job.fieldApiName)) {
       throw new Error('Invalid field api name for index');
     }
-    const uuidRe =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRe.test(job.workspaceId) || !uuidRe.test(job.objectId)) {
       throw new Error('Invalid workspace or object id for index');
     }
@@ -91,13 +90,15 @@ export class IndexJobsService implements OnModuleInit, OnModuleDestroy {
     const handle = openDatabase(migratorUrl);
     try {
       // CONCURRENTLY cannot run inside a transaction.
-      await handle.db.execute(sql.raw(`
+      await handle.db.execute(
+        sql.raw(`
         CREATE INDEX CONCURRENTLY IF NOT EXISTS ${indexName}
         ON records ((data->>'${job.fieldApiName}'))
         WHERE workspace_id = '${job.workspaceId}'::uuid
           AND object_id = '${job.objectId}'::uuid
           AND deleted_at IS NULL
-      `));
+      `),
+      );
     } finally {
       await handle.close();
     }

@@ -33,10 +33,7 @@ async function signUp(
   return { body: response.body as AuthBody, cookie: cookieHeader(response) };
 }
 
-async function signIn(
-  app: INestApplication,
-  input: { email: string; password: string },
-) {
+async function signIn(app: INestApplication, input: { email: string; password: string }) {
   const response = await request(app.getHttpServer())
     .post('/api/auth/sign-in/email')
     .send(input)
@@ -145,7 +142,10 @@ describe('auth and invite flow', () => {
       .post('/invitations')
       .set('Cookie', member.cookie)
       .set('X-Workspace-Id', workspaceId)
-      .send({ email: `other-${suffix}@example.com`, roleId: '00000000-0000-4000-8000-000000000099' })
+      .send({
+        email: `other-${suffix}@example.com`,
+        roleId: '00000000-0000-4000-8000-000000000099',
+      })
       .expect(403);
   });
 });

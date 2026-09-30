@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -12,7 +12,7 @@ import { SearchService } from './search.service';
 @Controller('search')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class SearchController {
-  constructor(private readonly searchService: SearchService) {}
+  constructor(@Inject(SearchService) private readonly searchService: SearchService) {}
 
   @Get()
   search(@WorkspaceContext() ctx: RequestContext, @Query() query: Record<string, unknown>) {

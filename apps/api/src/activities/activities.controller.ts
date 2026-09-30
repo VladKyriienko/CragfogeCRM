@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Inject, Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import type { CreateActivityBody, UpdateActivityBody } from '@cragfoge/shared';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
@@ -14,7 +14,7 @@ import { ActivitiesService } from './activities.service';
 @Controller('objects/:apiName/records/:recordId/activities')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class ActivitiesController {
-  constructor(private readonly activities: ActivitiesService) {}
+  constructor(@Inject(ActivitiesService) private readonly activities: ActivitiesService) {}
 
   @Get()
   list(

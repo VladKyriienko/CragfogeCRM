@@ -7,8 +7,6 @@ export function useEntitlements(workspaceId: string | null | undefined) {
     queryKey: ['entitlements', workspaceId],
     enabled: Boolean(workspaceId),
     queryFn: async (): Promise<EntitlementsDto> =>
-      entitlementsSchema.parse(
-        await apiFetch<unknown>('/billing/entitlements', { workspaceId }),
-      ),
+      entitlementsSchema.parse(await apiFetch<unknown>('/billing/entitlements', { workspaceId })),
   });
 }

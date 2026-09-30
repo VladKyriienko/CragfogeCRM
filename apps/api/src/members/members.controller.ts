@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -16,7 +16,7 @@ import { MembersService } from './members.service';
 @Controller('workspace')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class MembersController {
-  constructor(private readonly members: MembersService) {}
+  constructor(@Inject(MembersService) private readonly members: MembersService) {}
 
   @Get('members')
   list(@WorkspaceContext() ctx: RequestContext) {

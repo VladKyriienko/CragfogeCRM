@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import type Stripe from 'stripe';
 import type { Env } from '../config/env';
 import { ENV } from '../tokens';
 import { BillingController } from './billing.controller';
@@ -26,7 +27,7 @@ import { STRIPE_CLIENT } from './stripe.tokens';
         }
         // Lazy require so selfhost never constructs a Stripe client.
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const StripeCtor = require('stripe') as typeof import('stripe');
+        const StripeCtor = require('stripe') as new (apiKey: string) => Stripe;
         return new StripeCtor(env.STRIPE_SECRET_KEY);
       },
     },

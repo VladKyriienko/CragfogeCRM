@@ -15,7 +15,13 @@ import { records } from './records';
 import { users } from './users';
 import { workspaces } from './workspaces';
 
-export const automationRunStatusValues = ['pending', 'running', 'succeeded', 'failed', 'skipped'] as const;
+export const automationRunStatusValues = [
+  'pending',
+  'running',
+  'succeeded',
+  'failed',
+  'skipped',
+] as const;
 export type AutomationRunStatus = (typeof automationRunStatusValues)[number];
 
 export const automations = pgTable(

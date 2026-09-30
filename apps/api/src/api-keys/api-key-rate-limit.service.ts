@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import IORedis from 'ioredis';
+import type IORedis from 'ioredis';
 import type { Env } from '../config/env';
 import { ENV, REDIS } from '../tokens';
 

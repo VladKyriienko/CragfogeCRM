@@ -1,4 +1,4 @@
-import { Module, type OnModuleInit } from '@nestjs/common';
+import { Inject, Module, type OnModuleInit } from '@nestjs/common';
 import { ActivitiesModule } from '../activities/activities.module';
 import { AuditModule } from '../audit/audit.module';
 import { DomainEventsService } from '../events/domain-events.service';
@@ -17,7 +17,7 @@ import { DateScanWorker } from './date-scan.worker';
 })
 export class AutomationsModule implements OnModuleInit {
   constructor(
-    private readonly domainEvents: DomainEventsService,
+    @Inject(DomainEventsService) private readonly domainEvents: DomainEventsService,
     private readonly automations: AutomationsService,
   ) {}
 

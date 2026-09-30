@@ -1,8 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, apiKeys, eq, isNull, withWorkspace, type AppDatabase } from '@cragfoge/db';
 import {
   apiKeySchema,

@@ -46,7 +46,10 @@ describe('operatorsForType', () => {
   const cases: Array<[FieldType, string[]]> = [
     ['text', ['eq', 'neq', 'contains', 'in', 'is_empty', 'is_not_empty']],
     ['number', ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'is_empty', 'is_not_empty']],
-    ['date', ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'before', 'after', 'is_empty', 'is_not_empty']],
+    [
+      'date',
+      ['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'before', 'after', 'is_empty', 'is_not_empty'],
+    ],
     ['boolean', ['eq', 'neq', 'is_empty', 'is_not_empty']],
     ['select', ['eq', 'neq', 'in', 'is_empty', 'is_not_empty']],
     ['multi_select', ['contains', 'in', 'is_empty', 'is_not_empty']],

@@ -28,7 +28,11 @@ export function EntitlementsBanner({ workspaceId }: { workspaceId: string | null
     }
   }
 
-  if (status.deploymentMode === 'cloud' && status.billingStatus === 'trialing' && status.trialEndsAt) {
+  if (
+    status.deploymentMode === 'cloud' &&
+    status.billingStatus === 'trialing' &&
+    status.trialEndsAt
+  ) {
     messages.push(
       t('billing.banner.trial', {
         date: new Date(status.trialEndsAt).toLocaleDateString(),

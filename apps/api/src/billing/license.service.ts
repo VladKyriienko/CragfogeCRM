@@ -9,11 +9,7 @@ import {
 } from '@cragfoge/shared';
 import type { Env } from '../config/env';
 import { APP_DB, ENV } from '../tokens';
-import {
-  FREE_MODE_SEAT_LIMIT,
-  LicenseVerificationError,
-  verifyLicenseKey,
-} from './license-crypto';
+import { FREE_MODE_SEAT_LIMIT, LicenseVerificationError, verifyLicenseKey } from './license-crypto';
 
 export type ResolvedLicense = {
   valid: boolean;

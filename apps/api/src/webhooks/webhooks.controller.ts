@@ -1,4 +1,5 @@
 import {
+  Inject,
   Body,
   Controller,
   Delete,
@@ -25,7 +26,7 @@ import { WebhooksService } from './webhooks.service';
 @Controller('webhooks')
 @UseGuards(AuthGuard, WorkspaceGuard, PermissionGuard)
 export class WebhooksController {
-  constructor(private readonly webhooks: WebhooksService) {}
+  constructor(@Inject(WebhooksService) private readonly webhooks: WebhooksService) {}
 
   @Get()
   @RequirePermission(ADMIN_OBJECT_ID, 'read')

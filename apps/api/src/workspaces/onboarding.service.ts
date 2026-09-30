@@ -131,7 +131,12 @@ export class OnboardingService {
     const [peopleObject] = await tx
       .select({ id: objectDefinitions.id })
       .from(objectDefinitions)
-      .where(and(eq(objectDefinitions.workspaceId, workspaceId), eq(objectDefinitions.apiName, 'people')))
+      .where(
+        and(
+          eq(objectDefinitions.workspaceId, workspaceId),
+          eq(objectDefinitions.apiName, 'people'),
+        ),
+      )
       .limit(1);
 
     if (peopleObject) {
@@ -188,7 +193,10 @@ export class OnboardingService {
       .select({ value: count() })
       .from(webhookSubscriptions)
       .where(eq(webhookSubscriptions.workspaceId, workspaceId));
-    const [license] = await this.db.select({ id: instanceLicense.id }).from(instanceLicense).limit(1);
+    const [license] = await this.db
+      .select({ id: instanceLicense.id })
+      .from(instanceLicense)
+      .limit(1);
     if (Number(webhookCount?.value ?? 0) > 0 || license) {
       completed.add('connect_integration');
     }

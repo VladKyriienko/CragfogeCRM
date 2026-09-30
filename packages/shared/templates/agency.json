@@ -26,9 +26,27 @@
     }
   ],
   "fields": [
-    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
-    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
-    { "objectApiName": "people", "apiName": "role", "label": "Role", "type": "text", "position": 2 },
+    {
+      "objectApiName": "people",
+      "apiName": "email",
+      "label": "Email",
+      "type": "email",
+      "position": 0
+    },
+    {
+      "objectApiName": "people",
+      "apiName": "phone",
+      "label": "Phone",
+      "type": "phone",
+      "position": 1
+    },
+    {
+      "objectApiName": "people",
+      "apiName": "role",
+      "label": "Role",
+      "type": "text",
+      "position": 2
+    },
     {
       "objectApiName": "people",
       "apiName": "company",
@@ -37,9 +55,27 @@
       "position": 3,
       "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
     },
-    { "objectApiName": "companies", "apiName": "website", "label": "Website", "type": "url", "position": 0 },
-    { "objectApiName": "companies", "apiName": "billing_email", "label": "Billing email", "type": "email", "position": 1 },
-    { "objectApiName": "deals", "apiName": "budget", "label": "Budget", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "companies",
+      "apiName": "website",
+      "label": "Website",
+      "type": "url",
+      "position": 0
+    },
+    {
+      "objectApiName": "companies",
+      "apiName": "billing_email",
+      "label": "Billing email",
+      "type": "email",
+      "position": 1
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "budget",
+      "label": "Budget",
+      "type": "currency",
+      "position": 0
+    },
     {
       "objectApiName": "deals",
       "apiName": "stage",
@@ -56,7 +92,13 @@
         ]
       }
     },
-    { "objectApiName": "deals", "apiName": "due_date", "label": "Due date", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "due_date",
+      "label": "Due date",
+      "type": "date",
+      "position": 2
+    },
     {
       "objectApiName": "deals",
       "apiName": "company",

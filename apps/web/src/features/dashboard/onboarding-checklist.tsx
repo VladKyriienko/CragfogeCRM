@@ -64,7 +64,9 @@ export function OnboardingChecklistCard() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-sm font-medium">{t('dashboard.checklist.title')}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t('dashboard.checklist.description')}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t('dashboard.checklist.description')}
+          </p>
         </div>
         <Button
           variant="ghost"

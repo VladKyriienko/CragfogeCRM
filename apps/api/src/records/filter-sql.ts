@@ -275,7 +275,9 @@ function compileNode(
 
   const parts = node.and ?? node.or ?? [];
   const compiledParts = parts.map((part) => compileNode(part, fieldsByApiName));
-  const sqlParts = compiledParts.map((part) => part.sql).filter((part): part is SQL => Boolean(part));
+  const sqlParts = compiledParts
+    .map((part) => part.sql)
+    .filter((part): part is SQL => Boolean(part));
   const relationExists = compiledParts.flatMap((part) => part.relationExists);
 
   if (sqlParts.length === 0) {
@@ -283,9 +285,7 @@ function compileNode(
   }
 
   const joined =
-    node.and !== undefined
-      ? sql.join(sqlParts, sql` and `)
-      : sql.join(sqlParts, sql` or `);
+    node.and !== undefined ? sql.join(sqlParts, sql` and `) : sql.join(sqlParts, sql` or `);
   return { sql: sql`(${joined})`, relationExists };
 }
 

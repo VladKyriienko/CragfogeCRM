@@ -64,8 +64,9 @@ describe('StripeBillingService webhooks', () => {
     } as unknown as EntitlementsService;
     const stripe = {
       webhooks: {
-        constructEvent: vi.fn((raw: Buffer, _sig: string, _secret: string) =>
-          JSON.parse(raw.toString('utf8')) as Stripe.Event,
+        constructEvent: vi.fn(
+          (raw: Buffer, _sig: string, _secret: string) =>
+            JSON.parse(raw.toString('utf8')) as Stripe.Event,
         ),
       },
     } as unknown as Stripe;

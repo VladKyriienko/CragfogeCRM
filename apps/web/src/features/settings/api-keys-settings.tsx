@@ -38,8 +38,7 @@ export function ApiKeysSettings({ workspaceId }: ApiKeysSettingsProps) {
   const objects = useQuery({
     queryKey: ['objects', workspaceId],
     enabled: Boolean(workspaceId),
-    queryFn: async () =>
-      objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
+    queryFn: async () => objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
   });
 
   const createMutation = useMutation({
@@ -63,8 +62,7 @@ export function ApiKeysSettings({ workspaceId }: ApiKeysSettingsProps) {
   });
 
   const revokeMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiFetch(`/api-keys/${id}`, { method: 'DELETE', workspaceId }),
+    mutationFn: (id: string) => apiFetch(`/api-keys/${id}`, { method: 'DELETE', workspaceId }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['api-keys', workspaceId] });
     },

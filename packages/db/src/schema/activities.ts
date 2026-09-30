@@ -1,11 +1,4 @@
-import {
-  foreignKey,
-  index,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { foreignKey, index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { objectDefinitions } from './objects';
 import { workspaceIsolationPolicy } from './policies';
 import { records } from './records';

@@ -1,4 +1,5 @@
 import {
+  Inject,
   Body,
   Controller,
   Delete,
@@ -23,7 +24,7 @@ import { ViewsService } from './views.service';
 @Controller('objects/:apiName/views')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class ViewsController {
-  constructor(private readonly views: ViewsService) {}
+  constructor(@Inject(ViewsService) private readonly views: ViewsService) {}
 
   @Get()
   list(@WorkspaceContext() ctx: RequestContext, @Param('apiName') apiName: string) {

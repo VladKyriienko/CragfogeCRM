@@ -2,17 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { betterAuth, type Auth } from 'better-auth';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter';
 import { twoFactor } from 'better-auth/plugins';
-import {
-  accounts,
-  getAppDb,
-  sessions,
-  twoFactors,
-  users,
-  verifications,
-} from '@cragfoge/db';
+import { accounts, getAppDb, sessions, twoFactors, users, verifications } from '@cragfoge/db';
 import type { Env } from '../config/env';
 import type { EmailProvider } from '../email/email.types';
-import { AuditService } from '../audit/audit.service';
+import type { AuditService } from '../audit/audit.service';
 
 /**
  * Portable auth handle for Nest DI.

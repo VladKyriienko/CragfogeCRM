@@ -20,10 +20,10 @@ Cloud (process manager) and self-host (Docker) both ship the same logger — onl
 
 ## Sentry
 
-| Mode | Env var | Where |
-| ---- | ------- | ----- |
-| API (cloud or self-host) | `SENTRY_DSN` | `apps/api` — initialized in `create-app.ts` when set |
-| Web | `VITE_SENTRY_DSN` | build-time for Vite; set in the web image build args if needed |
+| Mode                     | Env var           | Where                                                          |
+| ------------------------ | ----------------- | -------------------------------------------------------------- |
+| API (cloud or self-host) | `SENTRY_DSN`      | `apps/api` — initialized in `create-app.ts` when set           |
+| Web                      | `VITE_SENTRY_DSN` | build-time for Vite; set in the web image build args if needed |
 
 Leave empty to disable.
 

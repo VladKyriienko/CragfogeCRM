@@ -12,7 +12,18 @@ const OPERATORS_BY_TYPE: Record<FieldType, ReadonlySet<string>> = {
   long_text: new Set(['eq', 'neq', 'contains', 'is_empty', 'is_not_empty']),
   number: new Set(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'is_empty', 'is_not_empty']),
   currency: new Set(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'is_empty', 'is_not_empty']),
-  date: new Set(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'before', 'after', 'is_empty', 'is_not_empty']),
+  date: new Set([
+    'eq',
+    'neq',
+    'gt',
+    'gte',
+    'lt',
+    'lte',
+    'before',
+    'after',
+    'is_empty',
+    'is_not_empty',
+  ]),
   datetime: new Set([
     'eq',
     'neq',
@@ -110,9 +121,9 @@ function fieldValueSchema(field: RecordFieldMeta): z.ZodTypeAny {
  * Builds a Zod schema for records.data from active (non-deleted, non-relation) fields.
  * Unknown keys are stripped; required fields are enforced when present in metadata.
  */
-export function buildRecordSchema(fields: readonly RecordFieldMeta[]): z.ZodObject<
-  Record<string, z.ZodTypeAny>
-> {
+export function buildRecordSchema(
+  fields: readonly RecordFieldMeta[],
+): z.ZodObject<Record<string, z.ZodTypeAny>> {
   const shape: Record<string, z.ZodTypeAny> = {};
   for (const field of fields) {
     if (field.deletedAt || field.type === 'relation') {

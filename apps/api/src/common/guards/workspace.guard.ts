@@ -26,12 +26,16 @@ import type { RequestContext, RequestUser, ResolvedPermission } from '../request
 
 @Injectable()
 export class WorkspaceGuard implements CanActivate {
-  constructor(@Inject(ApiKeyRateLimitService) private readonly apiKeyRateLimit: ApiKeyRateLimitService) {}
+  constructor(
+    @Inject(ApiKeyRateLimitService) private readonly apiKeyRateLimit: ApiKeyRateLimitService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<
-      Request & { user?: RequestUser; workspaceContext?: RequestContext; apiKeyAuth?: ApiKeyAuth }
-    >();
+    const request = context
+      .switchToHttp()
+      .getRequest<
+        Request & { user?: RequestUser; workspaceContext?: RequestContext; apiKeyAuth?: ApiKeyAuth }
+      >();
 
     if (!request.user) {
       throw new ForbiddenException('Authentication required');

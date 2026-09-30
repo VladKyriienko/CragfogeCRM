@@ -1,12 +1,6 @@
 import { integer, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
-export const billingStatusValues = [
-  'none',
-  'trialing',
-  'active',
-  'past_due',
-  'canceled',
-] as const;
+export const billingStatusValues = ['none', 'trialing', 'active', 'past_due', 'canceled'] as const;
 export type BillingStatus = (typeof billingStatusValues)[number];
 
 export type OnboardingChecklistState = {

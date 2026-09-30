@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Inject,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import type { UploadFileBody } from '@cragfoge/shared';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
@@ -13,7 +23,7 @@ import { FilesService } from './files.service';
 @Controller('objects/:apiName/records/:recordId/files')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class FilesController {
-  constructor(private readonly files: FilesService) {}
+  constructor(@Inject(FilesService) private readonly files: FilesService) {}
 
   @Get()
   list(

@@ -1,9 +1,4 @@
-import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   activities,
   and,
@@ -67,9 +62,7 @@ export class GdprService {
       const auditRows = await tx
         .select()
         .from(auditLogs)
-        .where(
-          and(eq(auditLogs.workspaceId, ctx.workspaceId), eq(auditLogs.entityId, person.id)),
-        );
+        .where(and(eq(auditLogs.workspaceId, ctx.workspaceId), eq(auditLogs.entityId, person.id)));
 
       return gdprExportSchema.parse({
         exportedAt: new Date().toISOString(),
@@ -131,9 +124,7 @@ export class GdprService {
       const auditRows = await tx
         .select({ id: auditLogs.id })
         .from(auditLogs)
-        .where(
-          and(eq(auditLogs.workspaceId, ctx.workspaceId), eq(auditLogs.entityId, person.id)),
-        );
+        .where(and(eq(auditLogs.workspaceId, ctx.workspaceId), eq(auditLogs.entityId, person.id)));
 
       if (activityRows.length > 0) {
         await tx.delete(activities).where(
@@ -253,7 +244,10 @@ export class GdprService {
       .innerJoin(objectDefinitions, eq(records.objectId, objectDefinitions.id))
       .innerJoin(fieldDefinitions, eq(recordRelations.fieldId, fieldDefinitions.id))
       .where(
-        and(eq(recordRelations.workspaceId, workspaceId), eq(recordRelations.fromRecordId, recordId)),
+        and(
+          eq(recordRelations.workspaceId, workspaceId),
+          eq(recordRelations.fromRecordId, recordId),
+        ),
       );
 
     const incoming = await tx

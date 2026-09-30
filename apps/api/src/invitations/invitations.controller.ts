@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Inject, Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
-import { ADMIN_OBJECT_ID, type AcceptInvitationBody, type CreateInvitationBody } from '@cragfoge/shared';
+import {
+  ADMIN_OBJECT_ID,
+  type AcceptInvitationBody,
+  type CreateInvitationBody,
+} from '@cragfoge/shared';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { RequirePermission } from '../common/decorators/require-permission.decorator';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
@@ -15,7 +19,7 @@ import { InvitationsService } from './invitations.service';
 @Controller()
 @UseGuards(AuthGuard)
 export class InvitationsController {
-  constructor(private readonly invitations: InvitationsService) {}
+  constructor(@Inject(InvitationsService) private readonly invitations: InvitationsService) {}
 
   @Get('invitations')
   @ApiHeader({ name: 'X-Workspace-Id', required: true })

@@ -3,13 +3,7 @@ import { z } from 'zod';
 export const deploymentModeSchema = z.enum(['cloud', 'selfhost']);
 export type DeploymentMode = z.infer<typeof deploymentModeSchema>;
 
-export const billingStatusSchema = z.enum([
-  'none',
-  'trialing',
-  'active',
-  'past_due',
-  'canceled',
-]);
+export const billingStatusSchema = z.enum(['none', 'trialing', 'active', 'past_due', 'canceled']);
 export type BillingStatus = z.infer<typeof billingStatusSchema>;
 
 export const entitlementActionSchema = z.enum(['invite_member']);

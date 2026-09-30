@@ -1,9 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   and,
   desc,
@@ -135,10 +131,7 @@ export class WebhooksService {
     });
   }
 
-  async listDeliveries(
-    ctx: RequestContext,
-    subscriptionId: string,
-  ): Promise<WebhookDeliveryDto[]> {
+  async listDeliveries(ctx: RequestContext, subscriptionId: string): Promise<WebhookDeliveryDto[]> {
     const rows = await withWorkspace(ctx.workspaceId, async (tx) => {
       const [sub] = await tx
         .select({ id: webhookSubscriptions.id })
@@ -161,7 +154,11 @@ export class WebhooksService {
     return rows.map((row) => this.toDeliveryDto(row));
   }
 
-  async resend(ctx: RequestContext, subscriptionId: string, deliveryId: string): Promise<WebhookDeliveryDto> {
+  async resend(
+    ctx: RequestContext,
+    subscriptionId: string,
+    deliveryId: string,
+  ): Promise<WebhookDeliveryDto> {
     const source = await withWorkspace(ctx.workspaceId, async (tx) => {
       const [row] = await tx
         .select()
@@ -206,10 +203,7 @@ export class WebhooksService {
 
   async enqueueForEvent(event: DomainEvent): Promise<void> {
     const subscriptions = await withWorkspace(event.workspaceId, (tx) =>
-      tx
-        .select()
-        .from(webhookSubscriptions)
-        .where(eq(webhookSubscriptions.isActive, true)),
+      tx.select().from(webhookSubscriptions).where(eq(webhookSubscriptions.isActive, true)),
     );
 
     const matching = subscriptions.filter((sub) => {

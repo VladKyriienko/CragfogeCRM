@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { useEntitlements } from '@/features/billing/use-entitlements';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -95,9 +95,7 @@ export function BillingSettings({ workspaceId }: { workspaceId: string | null })
         <div>
           <dt className="text-muted-foreground">{t('billing.mode')}</dt>
           <dd className="font-medium">
-            {status.deploymentMode === 'cloud'
-              ? t('billing.modeCloud')
-              : t('billing.modeSelfhost')}
+            {status.deploymentMode === 'cloud' ? t('billing.modeCloud') : t('billing.modeSelfhost')}
           </dd>
         </div>
         <div>

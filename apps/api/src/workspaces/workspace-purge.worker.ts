@@ -50,15 +50,11 @@ export class WorkspacePurgeWorker implements OnModuleInit, OnModuleDestroy {
     this.worker.on('failed', (_job, error) => {
       this.logger.error(`Workspace purge failed: ${error.message}`);
     });
-    await this.queue.add(
-      'daily',
-      {},
-      {
-        removeOnComplete: true,
-        jobId: 'workspace-purge-daily',
-        repeat: { every: 24 * 60 * 60 * 1000 },
-      } as Parameters<Queue['add']>[2],
-    );
+    await this.queue.add('daily', {}, {
+      removeOnComplete: true,
+      jobId: 'workspace-purge-daily',
+      repeat: { every: 24 * 60 * 60 * 1000 },
+    } as Parameters<Queue['add']>[2]);
   }
 
   async onModuleDestroy(): Promise<void> {
@@ -73,7 +69,10 @@ export class WorkspacePurgeWorker implements OnModuleInit, OnModuleDestroy {
       .select({ id: workspaces.id })
       .from(workspaces)
       .where(
-        and(isNotNull(workspaces.deletionScheduledAt), lte(workspaces.deletionScheduledAt, new Date())),
+        and(
+          isNotNull(workspaces.deletionScheduledAt),
+          lte(workspaces.deletionScheduledAt, new Date()),
+        ),
       );
 
     for (const workspace of due) {

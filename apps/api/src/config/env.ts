@@ -74,10 +74,7 @@ const baseEnvSchema = z.object({
    * - `worker` — consume queues only
    * - `all` — both (local `bun run dev` default)
    */
-  PROCESS_ROLE: z.preprocess(
-    emptyToUndefined,
-    z.enum(['api', 'worker', 'all']).default('all'),
-  ),
+  PROCESS_ROLE: z.preprocess(emptyToUndefined, z.enum(['api', 'worker', 'all']).default('all')),
   /** Optional Sentry DSN. Empty disables the SDK. */
   SENTRY_DSN: z.preprocess(emptyToUndefined, z.string().url().optional()),
   /**
@@ -117,7 +114,11 @@ export const envSchema = baseEnvSchema.superRefine((data, ctx) => {
     }
   }
 
-  if (data.DEPLOYMENT_MODE === 'selfhost' && data.NODE_ENV === 'production' && !data.LICENSE_PUBLIC_KEY) {
+  if (
+    data.DEPLOYMENT_MODE === 'selfhost' &&
+    data.NODE_ENV === 'production' &&
+    !data.LICENSE_PUBLIC_KEY
+  ) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ['LICENSE_PUBLIC_KEY'],

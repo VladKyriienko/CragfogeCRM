@@ -26,8 +26,20 @@
     }
   ],
   "fields": [
-    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
-    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    {
+      "objectApiName": "people",
+      "apiName": "email",
+      "label": "Email",
+      "type": "email",
+      "position": 0
+    },
+    {
+      "objectApiName": "people",
+      "apiName": "phone",
+      "label": "Phone",
+      "type": "phone",
+      "position": 1
+    },
     {
       "objectApiName": "people",
       "apiName": "contact_type",
@@ -43,10 +55,35 @@
         ]
       }
     },
-    { "objectApiName": "properties", "apiName": "address", "label": "Address", "type": "text", "position": 0, "required": true },
-    { "objectApiName": "properties", "apiName": "city", "label": "City", "type": "text", "position": 1 },
-    { "objectApiName": "properties", "apiName": "bedrooms", "label": "Bedrooms", "type": "number", "position": 2 },
-    { "objectApiName": "properties", "apiName": "list_price", "label": "List price", "type": "currency", "position": 3 },
+    {
+      "objectApiName": "properties",
+      "apiName": "address",
+      "label": "Address",
+      "type": "text",
+      "position": 0,
+      "required": true
+    },
+    {
+      "objectApiName": "properties",
+      "apiName": "city",
+      "label": "City",
+      "type": "text",
+      "position": 1
+    },
+    {
+      "objectApiName": "properties",
+      "apiName": "bedrooms",
+      "label": "Bedrooms",
+      "type": "number",
+      "position": 2
+    },
+    {
+      "objectApiName": "properties",
+      "apiName": "list_price",
+      "label": "List price",
+      "type": "currency",
+      "position": 3
+    },
     {
       "objectApiName": "properties",
       "apiName": "property_type",
@@ -62,7 +99,13 @@
         ]
       }
     },
-    { "objectApiName": "deals", "apiName": "asking_price", "label": "Asking price", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "asking_price",
+      "label": "Asking price",
+      "type": "currency",
+      "position": 0
+    },
     {
       "objectApiName": "deals",
       "apiName": "stage",
@@ -80,7 +123,13 @@
         ]
       }
     },
-    { "objectApiName": "deals", "apiName": "close_date", "label": "Expected close", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "close_date",
+      "label": "Expected close",
+      "type": "date",
+      "position": 2
+    },
     {
       "objectApiName": "deals",
       "apiName": "property",

@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import {
   eq,
   memberships,
@@ -12,18 +8,10 @@ import {
   type AppDatabase,
   type BillingStatus,
 } from '@cragfoge/db';
-import {
-  entitlementsSchema,
-  type EntitlementAction,
-  type EntitlementsDto,
-} from '@cragfoge/shared';
+import { entitlementsSchema, type EntitlementAction, type EntitlementsDto } from '@cragfoge/shared';
 import type { Env } from '../config/env';
 import { APP_DB, ENV } from '../tokens';
-import {
-  CLOUD_TRIAL_SEAT_LIMIT,
-  FREE_MODE_SEAT_LIMIT,
-  PAST_DUE_GRACE_MS,
-} from './license-crypto';
+import { CLOUD_TRIAL_SEAT_LIMIT, PAST_DUE_GRACE_MS } from './license-crypto';
 import { LicenseService } from './license.service';
 
 @Injectable()
@@ -98,8 +86,8 @@ export class EntitlementsService {
         workspace.trialEndsAt.getTime() < now &&
         !workspace.stripeSubscriptionId);
 
-    let seatLimit: number | null = null;
-    let canInviteMember = !isReadOnly;
+    let seatLimit: number | null;
+    let canInviteMember: boolean;
 
     if (billingStatus === 'trialing' && !isReadOnly) {
       seatLimit = CLOUD_TRIAL_SEAT_LIMIT;

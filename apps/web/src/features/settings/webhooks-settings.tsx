@@ -45,8 +45,7 @@ export function WebhooksSettings({ workspaceId }: WebhooksSettingsProps) {
   const objects = useQuery({
     queryKey: ['objects', workspaceId],
     enabled: Boolean(workspaceId),
-    queryFn: async () =>
-      objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
+    queryFn: async () => objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
   });
 
   const deliveries = useQuery({
@@ -106,7 +105,12 @@ export function WebhooksSettings({ workspaceId }: WebhooksSettingsProps) {
         <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm">
           <p className="font-medium">{t('settings.webhooks.secretOnce')}</p>
           <code className="mt-1 block break-all">{signingSecret}</code>
-          <Button className="mt-2" variant="outline" size="sm" onClick={() => setSigningSecret(null)}>
+          <Button
+            className="mt-2"
+            variant="outline"
+            size="sm"
+            onClick={() => setSigningSecret(null)}
+          >
             {t('settings.webhooks.dismissSecret')}
           </Button>
         </div>
@@ -115,16 +119,10 @@ export function WebhooksSettings({ workspaceId }: WebhooksSettingsProps) {
       <ul className="divide-y rounded-md border">
         {(hooks.data ?? []).map((hook: WebhookSubscriptionDto) => (
           <li key={hook.id} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
-            <button
-              type="button"
-              className="text-left"
-              onClick={() => setSelectedId(hook.id)}
-            >
+            <button type="button" className="text-left" onClick={() => setSelectedId(hook.id)}>
               <div className="font-medium truncate max-w-md">{hook.url}</div>
               <div className="text-muted-foreground">
-                {hook.isActive
-                  ? t('settings.webhooks.active')
-                  : t('settings.webhooks.disabled')}
+                {hook.isActive ? t('settings.webhooks.active') : t('settings.webhooks.disabled')}
                 {' · '}
                 {hook.events.join(', ')}
               </div>

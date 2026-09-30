@@ -74,10 +74,7 @@ export function verifyLicenseKey(licenseKey: string, publicKeyBase64: string): L
   return parsed.data;
 }
 
-export function signLicensePayload(
-  payload: LicensePayload,
-  privateKeyBase64: string,
-): string {
+export function signLicensePayload(payload: LicensePayload, privateKeyBase64: string): string {
   const payloadBytes = Buffer.from(JSON.stringify(payload), 'utf8');
   const privateKey = createPrivateKey({
     key: Buffer.from(privateKeyBase64, 'base64'),

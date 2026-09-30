@@ -26,12 +26,48 @@
     }
   ],
   "fields": [
-    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
-    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
-    { "objectApiName": "people", "apiName": "notes", "label": "Notes", "type": "long_text", "position": 2 },
-    { "objectApiName": "services", "apiName": "duration_minutes", "label": "Duration (min)", "type": "number", "position": 0 },
-    { "objectApiName": "services", "apiName": "price", "label": "Price", "type": "currency", "position": 1 },
-    { "objectApiName": "deals", "apiName": "price", "label": "Price", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "people",
+      "apiName": "email",
+      "label": "Email",
+      "type": "email",
+      "position": 0
+    },
+    {
+      "objectApiName": "people",
+      "apiName": "phone",
+      "label": "Phone",
+      "type": "phone",
+      "position": 1
+    },
+    {
+      "objectApiName": "people",
+      "apiName": "notes",
+      "label": "Notes",
+      "type": "long_text",
+      "position": 2
+    },
+    {
+      "objectApiName": "services",
+      "apiName": "duration_minutes",
+      "label": "Duration (min)",
+      "type": "number",
+      "position": 0
+    },
+    {
+      "objectApiName": "services",
+      "apiName": "price",
+      "label": "Price",
+      "type": "currency",
+      "position": 1
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "price",
+      "label": "Price",
+      "type": "currency",
+      "position": 0
+    },
     {
       "objectApiName": "deals",
       "apiName": "stage",
@@ -48,7 +84,13 @@
         ]
       }
     },
-    { "objectApiName": "deals", "apiName": "appointment_at", "label": "Appointment time", "type": "datetime", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "appointment_at",
+      "label": "Appointment time",
+      "type": "datetime",
+      "position": 2
+    },
     {
       "objectApiName": "deals",
       "apiName": "client",

@@ -1,4 +1,5 @@
 import {
+  Inject,
   Body,
   Controller,
   Delete,
@@ -30,7 +31,7 @@ import { RecordsService } from './records.service';
 @Controller('objects/:apiName/records')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class RecordsController {
-  constructor(private readonly records: RecordsService) {}
+  constructor(@Inject(RecordsService) private readonly records: RecordsService) {}
 
   @Get()
   list(

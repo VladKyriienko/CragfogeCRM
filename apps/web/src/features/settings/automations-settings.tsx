@@ -35,15 +35,13 @@ export function AutomationsSettings({ workspaceId }: AutomationsSettingsProps) {
   const automations = useQuery({
     queryKey: ['automations', workspaceId],
     enabled: Boolean(workspaceId),
-    queryFn: async () =>
-      listSchema.parse(await apiFetch<unknown>('/automations', { workspaceId })),
+    queryFn: async () => listSchema.parse(await apiFetch<unknown>('/automations', { workspaceId })),
   });
 
   const objects = useQuery({
     queryKey: ['objects', workspaceId],
     enabled: Boolean(workspaceId),
-    queryFn: async () =>
-      objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
+    queryFn: async () => objectsSchema.parse(await apiFetch<unknown>('/objects', { workspaceId })),
   });
 
   const createMutation = useMutation({
@@ -59,9 +57,7 @@ export function AutomationsSettings({ workspaceId }: AutomationsSettingsProps) {
 
       const actions = [
         { type: 'create_task' as const, subject: taskSubject },
-        ...(webhookUrl
-          ? [{ type: 'call_webhook' as const, url: webhookUrl }]
-          : []),
+        ...(webhookUrl ? [{ type: 'call_webhook' as const, url: webhookUrl }] : []),
       ];
 
       return apiFetch('/automations', {
@@ -165,16 +161,26 @@ export function AutomationsSettings({ workspaceId }: AutomationsSettingsProps) {
               value={triggerType}
               onChange={(e) => setTriggerType(e.target.value as AutomationTrigger['type'])}
             >
-              <option value="stage_changed">{t('settings.automations.triggers.stageChanged')}</option>
-              <option value="record_created">{t('settings.automations.triggers.recordCreated')}</option>
-              <option value="field_changed">{t('settings.automations.triggers.fieldChanged')}</option>
+              <option value="stage_changed">
+                {t('settings.automations.triggers.stageChanged')}
+              </option>
+              <option value="record_created">
+                {t('settings.automations.triggers.recordCreated')}
+              </option>
+              <option value="field_changed">
+                {t('settings.automations.triggers.fieldChanged')}
+              </option>
               <option value="date_reached">{t('settings.automations.triggers.dateReached')}</option>
             </select>
           </div>
           {(triggerType === 'stage_changed' || triggerType === 'field_changed') && (
             <div className="space-y-1.5">
               <Label htmlFor="auto-to">{t('settings.automations.triggerTo')}</Label>
-              <Input id="auto-to" value={triggerTo} onChange={(e) => setTriggerTo(e.target.value)} />
+              <Input
+                id="auto-to"
+                value={triggerTo}
+                onChange={(e) => setTriggerTo(e.target.value)}
+              />
             </div>
           )}
         </div>

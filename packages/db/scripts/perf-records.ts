@@ -24,9 +24,12 @@ async function main(): Promise<void> {
   const migrator = postgres(process.env.DATABASE_URL_MIGRATOR ?? DEFAULT_MIGRATOR_DATABASE_URL, {
     max: 4,
   });
-  const app = postgres(process.env.DATABASE_URL ?? 'postgresql://crm_app:crm_app@localhost:5432/crm', {
-    max: 4,
-  });
+  const app = postgres(
+    process.env.DATABASE_URL ?? 'postgresql://crm_app:crm_app@localhost:5432/crm',
+    {
+      max: 4,
+    },
+  );
 
   const workspaceId = randomUUID();
   const userId = randomUUID();
@@ -57,7 +60,12 @@ async function main(): Promise<void> {
   await migrator`
     insert into field_definitions (workspace_id, object_id, api_name, label, type, options, position, is_indexed)
     values
-      (${workspaceId}, ${objectId}, 'stage', 'Stage', 'select', ${migrator.json({ choices: [{ value: 'open', label: 'Open' }, { value: 'won', label: 'Won' }] })}, 0, true),
+      (${workspaceId}, ${objectId}, 'stage', 'Stage', 'select', ${migrator.json({
+        choices: [
+          { value: 'open', label: 'Open' },
+          { value: 'won', label: 'Won' },
+        ],
+      })}, 0, true),
       (${workspaceId}, ${objectId}, 'amount', 'Amount', 'number', ${migrator.json({})}, 1, true)
   `;
 

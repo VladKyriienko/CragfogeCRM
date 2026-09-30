@@ -1,6 +1,6 @@
 import type { CreateFieldBody, FieldDefinitionWithVisibilityDto } from '@cragfoge/shared';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState, type DragEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +28,33 @@ import {
   useUpdateField,
 } from '@/features/metadata/metadata-mutations';
 import { useObjects } from '@/features/metadata/use-objects';
+import { cn } from '@/lib/utils';
 import { FieldFormDialog } from './field-form-dialog';
+
+function sortByPosition(fields: FieldDefinitionWithVisibilityDto[]) {
+  return [...fields].sort((a, b) => a.position - b.position);
+}
+
+function reorderFields(
+  fields: FieldDefinitionWithVisibilityDto[],
+  fromIndex: number,
+  toIndex: number,
+) {
+  if (
+    fromIndex === toIndex ||
+    fromIndex < 0 ||
+    toIndex < 0 ||
+    fromIndex >= fields.length ||
+    toIndex >= fields.length
+  ) {
+    return fields;
+  }
+  const next = [...fields];
+  const [moved] = next.splice(fromIndex, 1);
+  if (!moved) return fields;
+  next.splice(toIndex, 0, moved);
+  return next;
+}
 
 export function ObjectsSettings({ workspaceId }: { workspaceId: string | null }) {
   const { t } = useTranslation();
@@ -40,13 +66,20 @@ export function ObjectsSettings({ workspaceId }: { workspaceId: string | null })
   const [createObjectOpen, setCreateObjectOpen] = useState(false);
   const [fieldDialogOpen, setFieldDialogOpen] = useState(false);
   const [editingField, setEditingField] = useState<FieldDefinitionWithVisibilityDto | null>(null);
+  const [orderedFields, setOrderedFields] = useState<FieldDefinitionWithVisibilityDto[]>([]);
+  const [draggingApiName, setDraggingApiName] = useState<string | null>(null);
+  const [dropTargetApiName, setDropTargetApiName] = useState<string | null>(null);
 
   const createObject = useCreateObject(workspaceId);
   const createField = useCreateField(workspaceId, activeApiName ?? '');
   const updateField = useUpdateField(workspaceId, activeApiName ?? '');
   const deleteField = useDeleteField(workspaceId, activeApiName ?? '');
 
-  const sortedFields = [...(fields.data ?? [])].sort((a, b) => a.position - b.position);
+  useEffect(() => {
+    setOrderedFields(sortByPosition(fields.data ?? []));
+    setDraggingApiName(null);
+    setDropTargetApiName(null);
+  }, [fields.data, activeApiName]);
 
   async function handleFieldSubmit(body: CreateFieldBody) {
     if (editingField) {
@@ -67,13 +100,49 @@ export function ObjectsSettings({ workspaceId }: { workspaceId: string | null })
     setEditingField(null);
   }
 
+  async function persistOrder(next: FieldDefinitionWithVisibilityDto[]) {
+    setOrderedFields(next);
+    const updates = next.flatMap((field, index) =>
+      field.position === index ? [] : [{ fieldApiName: field.apiName, body: { position: index } }],
+    );
+    if (updates.length === 0) return;
+    await Promise.all(updates.map((update) => updateField.mutateAsync(update)));
+  }
+
   function move(field: FieldDefinitionWithVisibilityDto, direction: -1 | 1) {
-    const index = sortedFields.findIndex((f) => f.apiName === field.apiName);
-    const targetIndex = index + direction;
-    const target = sortedFields[targetIndex];
-    if (!target) return;
-    updateField.mutate({ fieldApiName: field.apiName, body: { position: target.position } });
-    updateField.mutate({ fieldApiName: target.apiName, body: { position: field.position } });
+    const index = orderedFields.findIndex((item) => item.apiName === field.apiName);
+    if (index < 0) return;
+    void persistOrder(reorderFields(orderedFields, index, index + direction));
+  }
+
+  function handleDragStart(event: DragEvent<HTMLLIElement>, apiName: string) {
+    setDraggingApiName(apiName);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', apiName);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLLIElement>, apiName: string) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    if (dropTargetApiName !== apiName) {
+      setDropTargetApiName(apiName);
+    }
+  }
+
+  function handleDrop(event: DragEvent<HTMLLIElement>, targetApiName: string) {
+    event.preventDefault();
+    const sourceApiName = event.dataTransfer.getData('text/plain') || draggingApiName;
+    setDraggingApiName(null);
+    setDropTargetApiName(null);
+    if (!sourceApiName || sourceApiName === targetApiName) return;
+    const fromIndex = orderedFields.findIndex((field) => field.apiName === sourceApiName);
+    const toIndex = orderedFields.findIndex((field) => field.apiName === targetApiName);
+    void persistOrder(reorderFields(orderedFields, fromIndex, toIndex));
+  }
+
+  function handleDragEnd() {
+    setDraggingApiName(null);
+    setDropTargetApiName(null);
   }
 
   return (
@@ -114,7 +183,12 @@ export function ObjectsSettings({ workspaceId }: { workspaceId: string | null })
         {activeApiName ? (
           <>
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">{t('settings.objects.fields.title')}</h3>
+              <div>
+                <h3 className="text-sm font-medium">{t('settings.objects.fields.title')}</h3>
+                <p className="text-xs text-muted-foreground">
+                  {t('settings.objects.fields.dragHint')}
+                </p>
+              </div>
               <Button
                 size="sm"
                 onClick={() => {
@@ -128,15 +202,32 @@ export function ObjectsSettings({ workspaceId }: { workspaceId: string | null })
             </div>
             {fields.isPending ? <Skeleton className="h-40 w-full" /> : null}
             <ul className="divide-y rounded-md border">
-              {sortedFields.map((field) => (
+              {orderedFields.map((field) => (
                 <li
                   key={field.apiName}
-                  className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
+                  draggable
+                  onDragStart={(event) => handleDragStart(event, field.apiName)}
+                  onDragOver={(event) => handleDragOver(event, field.apiName)}
+                  onDrop={(event) => handleDrop(event, field.apiName)}
+                  onDragEnd={handleDragEnd}
+                  className={cn(
+                    'flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors',
+                    draggingApiName === field.apiName && 'opacity-50',
+                    dropTargetApiName === field.apiName &&
+                      draggingApiName !== field.apiName &&
+                      'bg-accent/60',
+                  )}
                 >
-                  <div className="flex items-center gap-2">
-                    <GripVertical className="size-4 text-muted-foreground" />
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span
+                      className="cursor-grab text-muted-foreground active:cursor-grabbing"
+                      aria-hidden="true"
+                      title={t('settings.objects.fields.dragHandle', { name: field.label })}
+                    >
+                      <GripVertical className="size-4" />
+                    </span>
                     <span className="font-medium">{field.label}</span>
-                    <span className="text-muted-foreground">{field.apiName}</span>
+                    <span className="truncate text-muted-foreground">{field.apiName}</span>
                     <span className="rounded bg-muted px-1.5 py-0.5 text-xs">{field.type}</span>
                     {field.isSystem ? (
                       <span className="text-xs text-muted-foreground">
@@ -144,11 +235,21 @@ export function ObjectsSettings({ workspaceId }: { workspaceId: string | null })
                       </span>
                     ) : null}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => move(field, -1)}>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={t('settings.objects.fields.moveUp', { name: field.label })}
+                      onClick={() => move(field, -1)}
+                    >
                       ↑
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => move(field, 1)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={t('settings.objects.fields.moveDown', { name: field.label })}
+                      onClick={() => move(field, 1)}
+                    >
                       ↓
                     </Button>
                     {!field.isSystem ? (

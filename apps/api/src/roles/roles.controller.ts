@@ -1,10 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import {
-  ADMIN_OBJECT_ID,
-  type CreateRoleBody,
-  type UpdateMemberRoleBody,
-} from '@cragfoge/shared';
+  Inject,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ADMIN_OBJECT_ID, type CreateRoleBody, type UpdateMemberRoleBody } from '@cragfoge/shared';
 import { RequirePermission } from '../common/decorators/require-permission.decorator';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -19,7 +25,7 @@ import { RolesService } from './roles.service';
 @Controller()
 @UseGuards(AuthGuard, WorkspaceGuard, PermissionGuard)
 export class RolesController {
-  constructor(private readonly roles: RolesService) {}
+  constructor(@Inject(RolesService) private readonly roles: RolesService) {}
 
   @Get('roles')
   @RequirePermission(ADMIN_OBJECT_ID, 'read')

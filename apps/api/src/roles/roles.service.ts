@@ -111,11 +111,7 @@ export class RolesService {
     );
   }
 
-  async updateMemberRole(
-    ctx: RequestContext,
-    membershipId: string,
-    body: UpdateMemberRoleBody,
-  ) {
+  async updateMemberRole(ctx: RequestContext, membershipId: string, body: UpdateMemberRoleBody) {
     const input = updateMemberRoleBodySchema.parse(body);
 
     const updated = await withWorkspace(
@@ -200,9 +196,7 @@ export class RolesService {
             .select({ count: sql<number>`count(*)::int` })
             .from(memberships)
             .innerJoin(roles, eq(memberships.roleId, roles.id))
-            .where(
-              and(eq(memberships.workspaceId, ctx.workspaceId), eq(roles.key, 'owner')),
-            );
+            .where(and(eq(memberships.workspaceId, ctx.workspaceId), eq(roles.key, 'owner')));
           if ((ownerCount?.count ?? 0) <= 1) {
             throw new BadRequestException('Cannot remove the last Owner');
           }

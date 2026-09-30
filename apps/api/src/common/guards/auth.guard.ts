@@ -7,14 +7,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { fromNodeHeaders } from 'better-auth/node';
-import {
-  and,
-  apiKeys,
-  eq,
-  isNull,
-  users,
-  withWorkspace,
-} from '@cragfoge/db';
+import { and, apiKeys, eq, isNull, users, withWorkspace } from '@cragfoge/db';
 import { workspaceIdSchema, type ApiKeyScopes } from '@cragfoge/shared';
 import type { Request } from 'express';
 import { hashApiKey, parseBearerToken } from '../../api-keys/api-key.util';
@@ -33,9 +26,9 @@ export class AuthGuard implements CanActivate {
   constructor(@Inject(AUTH) private readonly auth: AuthInstance) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<
-      Request & { user?: RequestUser; apiKeyAuth?: ApiKeyAuth }
-    >();
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: RequestUser; apiKeyAuth?: ApiKeyAuth }>();
 
     const bearer = parseBearerToken(request.headers.authorization);
     if (bearer) {
@@ -89,10 +82,7 @@ export class AuthGuard implements CanActivate {
         return null;
       }
 
-      await tx
-        .update(apiKeys)
-        .set({ lastUsedAt: new Date() })
-        .where(eq(apiKeys.id, key.id));
+      await tx.update(apiKeys).set({ lastUsedAt: new Date() }).where(eq(apiKeys.id, key.id));
 
       return { key, user };
     });

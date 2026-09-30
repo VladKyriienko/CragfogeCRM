@@ -1,4 +1,4 @@
-import { Module, type OnModuleInit } from '@nestjs/common';
+import { Inject, Module, type OnModuleInit } from '@nestjs/common';
 import { AuditModule } from '../audit/audit.module';
 import { DomainEventsService } from '../events/domain-events.service';
 import { RedisModule } from '../redis/redis.module';
@@ -14,7 +14,7 @@ import { WebhooksService } from './webhooks.service';
 })
 export class WebhooksModule implements OnModuleInit {
   constructor(
-    private readonly domainEvents: DomainEventsService,
+    @Inject(DomainEventsService) private readonly domainEvents: DomainEventsService,
     private readonly webhooks: WebhooksService,
   ) {}
 

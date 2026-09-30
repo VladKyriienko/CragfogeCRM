@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Inject,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { ADMIN_OBJECT_ID, type CreateApiKeyBody } from '@cragfoge/shared';
 import { RequirePermission } from '../common/decorators/require-permission.decorator';
@@ -15,7 +25,7 @@ import { ApiKeysService } from './api-keys.service';
 @Controller('api-keys')
 @UseGuards(AuthGuard, WorkspaceGuard, PermissionGuard)
 export class ApiKeysController {
-  constructor(private readonly apiKeys: ApiKeysService) {}
+  constructor(@Inject(ApiKeysService) private readonly apiKeys: ApiKeysService) {}
 
   @Get()
   @RequirePermission(ADMIN_OBJECT_ID, 'read')

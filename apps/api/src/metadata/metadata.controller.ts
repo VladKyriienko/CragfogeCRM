@@ -1,4 +1,5 @@
 import {
+  Inject,
   Body,
   Controller,
   Delete,
@@ -32,7 +33,7 @@ import { MetadataService } from './metadata.service';
 @Controller('objects')
 @UseGuards(AuthGuard, WorkspaceGuard, PermissionGuard)
 export class MetadataController {
-  constructor(private readonly metadata: MetadataService) {}
+  constructor(@Inject(MetadataService) private readonly metadata: MetadataService) {}
 
   @Get()
   listObjects(@WorkspaceContext() ctx: RequestContext) {

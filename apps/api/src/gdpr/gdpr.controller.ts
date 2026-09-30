@@ -1,4 +1,4 @@
-import { Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Inject, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { WorkspaceContext } from '../common/decorators/workspace-context.decorator';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -12,7 +12,7 @@ import { GdprService } from './gdpr.service';
 @Controller('objects/people/records')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class GdprController {
-  constructor(private readonly gdpr: GdprService) {}
+  constructor(@Inject(GdprService) private readonly gdpr: GdprService) {}
 
   @Post(':id/gdpr-export')
   exportPerson(@WorkspaceContext() ctx: RequestContext, @Param('id') id: string) {

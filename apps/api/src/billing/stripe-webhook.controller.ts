@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Headers,
-  HttpCode,
-  Inject,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Controller, Headers, HttpCode, Inject, Post, Req } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { StripeBillingService } from './stripe-billing.service';
@@ -19,10 +12,7 @@ export class StripeWebhookController {
 
   @Post('stripe')
   @HttpCode(200)
-  handle(
-    @Req() req: RawBodyRequest,
-    @Headers('stripe-signature') signature: string | undefined,
-  ) {
+  handle(@Req() req: RawBodyRequest, @Headers('stripe-signature') signature: string | undefined) {
     const rawBody = req.rawBody;
     if (!rawBody || !Buffer.isBuffer(rawBody)) {
       return this.stripeBilling.handleWebhook(Buffer.alloc(0), signature ?? '');

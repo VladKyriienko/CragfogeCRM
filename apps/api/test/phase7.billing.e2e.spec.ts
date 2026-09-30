@@ -99,7 +99,9 @@ describe('Phase 7 billing (selfhost)', () => {
       .set('Cookie', owner.cookie)
       .set('X-Workspace-Id', workspaceId)
       .expect(200);
-    const memberRole = (roles.body as { id: string; key: string }[]).find((r) => r.key === 'member');
+    const memberRole = (roles.body as { id: string; key: string }[]).find(
+      (r) => r.key === 'member',
+    );
     expect(memberRole).toBeTruthy();
 
     for (let i = 0; i < 2; i += 1) {

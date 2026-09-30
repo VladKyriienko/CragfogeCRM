@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Inject, Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import type { CreateExportJobBody } from '@cragfoge/shared';
@@ -14,7 +14,7 @@ import { ExportsService } from './exports.service';
 @Controller('objects/:apiName/exports')
 @UseGuards(AuthGuard, WorkspaceGuard)
 export class ExportsController {
-  constructor(private readonly exports: ExportsService) {}
+  constructor(@Inject(ExportsService) private readonly exports: ExportsService) {}
 
   @Post()
   create(

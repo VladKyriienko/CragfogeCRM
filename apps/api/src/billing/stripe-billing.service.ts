@@ -184,17 +184,14 @@ export class StripeBillingService {
   }
 
   private async onCheckoutCompleted(session: Stripe.Checkout.Session): Promise<void> {
-    const workspaceId =
-      session.metadata?.workspace_id ?? session.client_reference_id ?? undefined;
+    const workspaceId = session.metadata?.workspace_id ?? session.client_reference_id ?? undefined;
     if (!workspaceId) {
       return;
     }
     const customerId =
       typeof session.customer === 'string' ? session.customer : session.customer?.id;
     const subscriptionId =
-      typeof session.subscription === 'string'
-        ? session.subscription
-        : session.subscription?.id;
+      typeof session.subscription === 'string' ? session.subscription : session.subscription?.id;
 
     await this.db
       .update(workspaces)
@@ -292,9 +289,7 @@ export class StripeBillingService {
       return bySub;
     }
     const customerId =
-      typeof subscription.customer === 'string'
-        ? subscription.customer
-        : subscription.customer.id;
+      typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
     const [byCustomer] = await this.db
       .select()
       .from(workspaces)

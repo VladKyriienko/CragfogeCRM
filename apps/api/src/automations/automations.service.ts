@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   and,
   automationRuns,
@@ -192,9 +187,7 @@ export class AutomationsService {
       tx
         .select()
         .from(automations)
-        .where(
-          and(eq(automations.objectId, event.objectId), eq(automations.isActive, true)),
-        ),
+        .where(and(eq(automations.objectId, event.objectId), eq(automations.isActive, true))),
     );
 
     for (const automation of active) {
@@ -255,11 +248,7 @@ export class AutomationsService {
       });
 
       const [object] = await withWorkspace(auto.workspaceId, (tx) =>
-        tx
-          .select()
-          .from(objectDefinitions)
-          .where(eq(objectDefinitions.id, auto.objectId))
-          .limit(1),
+        tx.select().from(objectDefinitions).where(eq(objectDefinitions.id, auto.objectId)).limit(1),
       );
       if (!object) {
         continue;

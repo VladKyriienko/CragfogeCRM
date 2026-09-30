@@ -34,7 +34,9 @@ export const records = pgTable(
       .notNull()
       .references(() => users.id),
     data: jsonb('data').$type<Record<string, unknown>>().notNull().default({}),
-    search: tsvector('search').notNull().default(sql`''::tsvector`),
+    search: tsvector('search')
+      .notNull()
+      .default(sql`''::tsvector`),
     createdBy: text('created_by')
       .notNull()
       .references(() => users.id),

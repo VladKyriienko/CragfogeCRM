@@ -264,8 +264,8 @@ describe('phase 6: api keys, webhooks, automations', () => {
   it('serves public OpenAPI at /docs/public', async () => {
     const response = await request(app.getHttpServer()).get('/docs/public-json').expect(200);
     expect(response.body.paths).toBeDefined();
-    expect(Object.keys(response.body.paths as object).some((path) => path.includes('/records'))).toBe(
-      true,
-    );
+    expect(
+      Object.keys(response.body.paths as object).some((path) => path.includes('/records')),
+    ).toBe(true);
   });
 });

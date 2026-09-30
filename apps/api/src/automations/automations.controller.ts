@@ -1,4 +1,5 @@
 import {
+  Inject,
   Body,
   Controller,
   Delete,
@@ -29,7 +30,7 @@ import { AutomationsService } from './automations.service';
 @Controller('automations')
 @UseGuards(AuthGuard, WorkspaceGuard, PermissionGuard)
 export class AutomationsController {
-  constructor(private readonly automations: AutomationsService) {}
+  constructor(@Inject(AutomationsService) private readonly automations: AutomationsService) {}
 
   @Get()
   @RequirePermission(ADMIN_OBJECT_ID, 'read')
