@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: crm
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d crm"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run test
+        env:
+          DATABASE_URL: postgresql://crm_app:crm_app@localhost:5432/crm
+          DATABASE_URL_MIGRATOR: postgresql://crm_migrator:crm_migrator@localhost:5432/crm
+          DATABASE_URL_ADMIN: postgresql://postgres:postgres@localhost:5432/crm
+          REDIS_URL: redis://localhost:6379
+      # Playwright e2e (`bun --filter @cragfoge/web e2e`) intentionally does not
+      # run in CI yet. Unlike the unit/e2e-via-Supertest tests above, it needs a
+      # live API + web dev server pair (not just DB/Redis services), a MinIO +
+      # Mailpit service, installed Playwright browsers, and is sensitive to the
+      # API's global rate limiter (see apps/web/e2e/records-flow.spec.ts) when
+      # run repeatedly. Run it locally against `docker compose up -d` + `bun run
+      # dev` instead; wire it up here once that startup sequence is scripted
+      # and proven stable.

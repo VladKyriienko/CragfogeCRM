@@ -1,0 +1,429 @@
+{
+  "app": {
+    "name": "Cragfoge CRM"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "recordsSection": "Records",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "workspace": "Workspace",
+    "account": "Account",
+    "noWorkspace": "No workspace",
+    "createWorkspace": "Create workspace…"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "true": "True",
+    "false": "False"
+  },
+  "auth": {
+    "signOut": "Sign out",
+    "signingIn": "Signing in…",
+    "signingUp": "Creating account…",
+    "backToSignIn": "Back to sign in",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "newPassword": "New password"
+    },
+    "errors": {
+      "generic": "Something went wrong. Try again."
+    },
+    "signIn": {
+      "title": "Sign in",
+      "description": "Access your workspaces.",
+      "submit": "Sign in",
+      "forgot": "Forgot password?",
+      "toSignUp": "Need an account? Sign up"
+    },
+    "signUp": {
+      "title": "Create account",
+      "description": "Start with a free workspace for your team.",
+      "submit": "Sign up",
+      "toSignIn": "Already have an account? Sign in"
+    },
+    "forgot": {
+      "title": "Reset password",
+      "description": "We will email you a reset link.",
+      "submit": "Send reset link",
+      "sent": "If that email exists, a reset link is on the way."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "description": "Enter a password with at least 8 characters.",
+      "submit": "Update password",
+      "missingToken": "Reset token is missing from the link."
+    }
+  },
+  "setup": {
+    "title": "First-run setup",
+    "description": "Create the first Owner account and workspace for this installation.",
+    "submit": "Create Owner and workspace",
+    "submitting": "Setting up…"
+  },
+  "onboarding": {
+    "title": "Create your workspace",
+    "description": "You will be the Owner of this workspace.",
+    "submit": "Create workspace",
+    "fields": {
+      "name": "Workspace name",
+      "timezone": "Timezone",
+      "currency": "Currency"
+    },
+    "template": "Industry template",
+    "sampleData": "Include sample records",
+    "templates": {
+      "generic-sales": "Generic sales",
+      "agency": "Agency",
+      "real-estate": "Real estate",
+      "beauty-salon": "Beauty / Salon",
+      "trades": "Trades"
+    }
+  },
+  "invite": {
+    "title": "Accept invitation",
+    "description": "Join the workspace you were invited to.",
+    "accept": "Accept invitation",
+    "accepting": "Accepting…",
+    "missingToken": "Invitation token is missing from the link."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Your workspace overview will live here.",
+    "apiStatus": "API status",
+    "refresh": "Refresh",
+    "database": "Database",
+    "redis": "Redis",
+    "ok": "Reachable",
+    "error": "Unavailable",
+    "loading": "Checking…",
+    "unavailable": "The API did not respond.",
+    "checklist": {
+      "title": "Getting started",
+      "description": "Five quick steps to make this workspace useful for your team.",
+      "open": "Open",
+      "dismiss": "Dismiss",
+      "dismissAll": "Hide checklist",
+      "steps": {
+        "import_contacts": {
+          "title": "Add contacts",
+          "description": "Create or import people your team works with."
+        },
+        "invite_team": {
+          "title": "Invite your team",
+          "description": "Send an invite from Settings → Members."
+        },
+        "customize_fields": {
+          "title": "Customize fields",
+          "description": "Add a custom field that matches how you work."
+        },
+        "create_record": {
+          "title": "Create a record",
+          "description": "Add your first deal, job, or listing."
+        },
+        "connect_integration": {
+          "title": "Connect webhooks or license",
+          "description": "Add an outgoing webhook, or activate a self-host license."
+        }
+      }
+    }
+  },
+  "records": {
+    "count": "{{count}} record",
+    "count_plural": "{{count}} records",
+    "searchPlaceholder": "Search…",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row",
+    "columns": {
+      "name": "Name",
+      "owner": "Owner",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "picker": "Columns",
+      "visible": "Visible columns",
+      "hidden": "Hidden fields"
+    },
+    "filters": {
+      "add": "Add filter",
+      "field": "Filter field",
+      "operator": "Filter operator",
+      "value": "Filter value",
+      "commaSeparated": "Comma-separated values",
+      "operators": {
+        "eq": "is",
+        "neq": "is not",
+        "contains": "contains",
+        "gt": "greater than",
+        "gte": "greater or equal",
+        "lt": "less than",
+        "lte": "less or equal",
+        "in": "is any of",
+        "is_empty": "is empty",
+        "is_not_empty": "is not empty",
+        "before": "before",
+        "after": "after"
+      }
+    },
+    "sort": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    },
+    "views": {
+      "default": "Default view",
+      "saveAsNew": "Save as new view",
+      "update": "Update view",
+      "namePlaceholder": "View name",
+      "confirmDelete": "Delete view “{{name}}”? This cannot be undone."
+    },
+    "bulk": {
+      "selected": "{{count}} selected",
+      "editField": "Edit field",
+      "delete": "Delete",
+      "editTitle": "Edit field on {{count}} records",
+      "apply": "Apply",
+      "confirmDelete": "Delete {{count}} records? This cannot be undone."
+    },
+    "export": {
+      "action": "Export CSV",
+      "download": "Download CSV",
+      "retry": "Retry export"
+    },
+    "create": {
+      "action": "New {{label}}",
+      "title": "Create record",
+      "submit": "Create"
+    },
+    "field": {
+      "name": "Name",
+      "selectPlaceholder": "Choose…",
+      "userPlaceholder": "Choose a member…",
+      "relationPlaceholder": "Choose a record…",
+      "relationEmpty": "No records to link yet."
+    },
+    "empty": {
+      "title": "No records yet",
+      "description": "Create your first record to get started."
+    },
+    "noObjects": {
+      "title": "No objects configured",
+      "description": "Ask an admin to create an object in Settings → Objects."
+    },
+    "notFound": {
+      "title": "Object not found",
+      "description": "This object does not exist or you do not have access to it."
+    },
+    "detail": {
+      "owner": "Owner",
+      "related": "Related records",
+      "noRelated": "No linked records.",
+      "notFound": "Record not found.",
+      "tabs": {
+        "details": "Details",
+        "files": "Files",
+        "activity": "Activity"
+      },
+      "activities": {
+        "subject": "Task subject",
+        "subjectPlaceholder": "Call the customer…",
+        "addTask": "Add task",
+        "loading": "Loading activities…",
+        "empty": "No tasks yet."
+      }
+    },
+    "files": {
+      "title": "Files",
+      "upload": "Upload",
+      "empty": "No files attached yet.",
+      "tooLarge": "File is larger than the 8MB limit.",
+      "confirmDelete": "Delete file “{{name}}”? This cannot be undone."
+    }
+  },
+  "search": {
+    "trigger": "Search",
+    "title": "Search",
+    "placeholder": "Search records…",
+    "hint": "Type to search across all records.",
+    "noResults": "No results found.",
+    "results": "Records"
+  },
+  "billing": {
+    "title": "Billing",
+    "loadError": "Could not load billing status.",
+    "mode": "Deployment mode",
+    "modeCloud": "Cloud",
+    "modeSelfhost": "Self-hosted",
+    "status": "Subscription status",
+    "seats": "Seats",
+    "seatsUsed": "{{used}} / {{limit}}",
+    "seatsUnlimited": "{{used}} (billed per seat)",
+    "trialEnds": "Trial ends",
+    "licensee": "Licensee",
+    "checkout": "Subscribe with Stripe",
+    "portal": "Manage subscription",
+    "licenseKey": "License key",
+    "activateLicense": "Activate license",
+    "licenseActive": "A valid license is active.",
+    "licenseFreeMode": "Free mode: up to {{limit}} users without a license.",
+    "statuses": {
+      "none": "Not applicable",
+      "trialing": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "canceled": "Canceled"
+    },
+    "banner": {
+      "readOnly": "This workspace is read-only. You can still export data.",
+      "pastDue": "Payment failed. Full access continues for 7 days — update billing in Settings.",
+      "trial": "Your trial ends on {{date}}. Subscribe in Settings → Billing.",
+      "freeSeatLimit": "Free mode allows {{limit}} users. Activate a license to invite more.",
+      "overSeatLimit": "This workspace is over the licensed seat limit ({{limit}}). New invites are blocked.",
+      "seatLimitReached": "Seat limit reached ({{limit}}). New invites are blocked."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage members, roles, objects, billing, API keys, webhooks, and automations.",
+    "loading": "Loading…",
+    "danger": {
+      "tab": "Danger zone",
+      "title": "Delete workspace",
+      "description": "Schedules permanent deletion in 30 days. You can cancel before then.",
+      "delete": "Schedule deletion",
+      "cancel": "Cancel scheduled deletion",
+      "confirm": "Schedule this workspace for deletion in 30 days?",
+      "scheduled": "Deletion scheduled for {{date}}."
+    },
+    "members": {
+      "title": "Members",
+      "forbidden": "You do not have permission to manage members."
+    },
+    "apiKeys": {
+      "title": "API keys",
+      "name": "Key name",
+      "scopes": "Scopes",
+      "read": "Read",
+      "write": "Write",
+      "create": "Create key",
+      "revoke": "Revoke",
+      "confirmRevoke": "Revoke API key “{{name}}”? Apps using it will stop working.",
+      "prefix": "Prefix {{prefix}}",
+      "rawKeyOnce": "Copy this key now — it will not be shown again.",
+      "dismissRawKey": "I have copied the key"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "url": "Endpoint URL",
+      "events": "Events",
+      "objectFilter": "Object filter",
+      "allObjects": "All objects",
+      "create": "Create webhook",
+      "active": "Active",
+      "disabled": "Disabled",
+      "deliveries": "Log",
+      "deliveryLog": "Delivery log",
+      "attempts": "{{count}} attempts",
+      "resend": "Resend",
+      "secretOnce": "Copy this signing secret now — it will not be shown again.",
+      "dismissSecret": "I have copied the secret"
+    },
+    "automations": {
+      "title": "Automations",
+      "name": "Automation name",
+      "object": "Object",
+      "chooseObject": "Choose an object",
+      "trigger": "Trigger",
+      "triggerTo": "To value",
+      "taskSubject": "Create task subject",
+      "webhookUrl": "Also call webhook URL (optional)",
+      "create": "Create automation",
+      "active": "Active",
+      "inactive": "Inactive",
+      "enable": "Enable",
+      "disable": "Disable",
+      "triggers": {
+        "stageChanged": "Stage changed",
+        "recordCreated": "Record created",
+        "fieldChanged": "Field changed",
+        "dateReached": "Date field reached"
+      }
+    },
+    "invite": {
+      "email": "Invite email",
+      "role": "Role",
+      "chooseRole": "Choose a role",
+      "submit": "Send invite"
+    },
+    "roles": {
+      "title": "Roles",
+      "name": "Role name",
+      "key": "Role key",
+      "submit": "Create role"
+    },
+    "objects": {
+      "title": "Objects",
+      "noSelection": "Create an object to configure its fields.",
+      "createTitle": "Create object",
+      "apiName": "API name",
+      "labelSingular": "Singular label",
+      "labelPlural": "Plural label",
+      "icon": "Icon",
+      "errors": {
+        "apiName": "API name must be snake_case starting with a letter.",
+        "label": "Singular and plural labels are required."
+      },
+      "fields": {
+        "title": "Fields",
+        "add": "Add field",
+        "system": "system",
+        "confirmDelete": "Delete field “{{name}}”? Existing values for this field will be lost.",
+        "createTitle": "Create field",
+        "editTitle": "Edit field",
+        "apiName": "API name",
+        "label": "Label",
+        "type": "Type",
+        "required": "Required",
+        "unique": "Unique",
+        "indexed": "Indexed",
+        "choices": "Choices",
+        "choiceValue": "Value",
+        "choiceLabel": "Label",
+        "addChoice": "Add choice",
+        "relatedObject": "Related object",
+        "cardinality": "Cardinality",
+        "cardinalityOne": "One",
+        "cardinalityMany": "Many",
+        "errors": {
+          "apiName": "API name must be snake_case starting with a letter.",
+          "label": "Label is required.",
+          "choices": "Add at least one choice.",
+          "relation": "Choose a related object."
+        },
+        "types": {
+          "text": "Text",
+          "long_text": "Long text",
+          "number": "Number",
+          "currency": "Currency",
+          "date": "Date",
+          "datetime": "Date & time",
+          "boolean": "Checkbox",
+          "select": "Select",
+          "multi_select": "Multi-select",
+          "email": "Email",
+          "phone": "Phone",
+          "url": "URL",
+          "user": "User",
+          "relation": "Relation"
+        }
+      }
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "That page is not part of this workspace."
+  }
+}

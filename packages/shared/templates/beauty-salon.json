@@ -1,0 +1,110 @@
+{
+  "id": "beauty-salon",
+  "name": "Beauty / Salon",
+  "description": "Clients, services, and appointments for salons and spas.",
+  "objects": [
+    {
+      "apiName": "people",
+      "labelSingular": "Client",
+      "labelPlural": "Clients",
+      "icon": "user",
+      "isSystem": true
+    },
+    {
+      "apiName": "services",
+      "labelSingular": "Service",
+      "labelPlural": "Services",
+      "icon": "sparkles",
+      "isSystem": false
+    },
+    {
+      "apiName": "deals",
+      "labelSingular": "Appointment",
+      "labelPlural": "Appointments",
+      "icon": "calendar",
+      "isSystem": true
+    }
+  ],
+  "fields": [
+    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
+    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "people", "apiName": "notes", "label": "Notes", "type": "long_text", "position": 2 },
+    { "objectApiName": "services", "apiName": "duration_minutes", "label": "Duration (min)", "type": "number", "position": 0 },
+    { "objectApiName": "services", "apiName": "price", "label": "Price", "type": "currency", "position": 1 },
+    { "objectApiName": "deals", "apiName": "price", "label": "Price", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "stage",
+      "label": "Status",
+      "type": "select",
+      "position": 1,
+      "options": {
+        "choices": [
+          { "value": "booked", "label": "Booked" },
+          { "value": "confirmed", "label": "Confirmed" },
+          { "value": "completed", "label": "Completed" },
+          { "value": "no_show", "label": "No-show" },
+          { "value": "cancelled", "label": "Cancelled" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "appointment_at", "label": "Appointment time", "type": "datetime", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "client",
+      "label": "Client",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "people", "cardinality": "one" }
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "service",
+      "label": "Service",
+      "type": "relation",
+      "position": 4,
+      "options": { "relatedObjectApiName": "services", "cardinality": "one" }
+    }
+  ],
+  "views": [
+    {
+      "objectApiName": "deals",
+      "name": "Appointment board",
+      "columns": ["name", "stage", "appointment_at", "price"],
+      "isShared": true
+    }
+  ],
+  "automations": [
+    {
+      "objectApiName": "deals",
+      "name": "Thank-you task after completed visit",
+      "trigger": { "type": "stage_changed", "to": "completed" },
+      "actions": [
+        {
+          "type": "create_task",
+          "subject": "Send thank-you to client for {{name}}",
+          "body": "Appointment completed."
+        }
+      ],
+      "isActive": true
+    }
+  ],
+  "sampleRecords": [
+    {
+      "objectApiName": "people",
+      "name": "Casey Client",
+      "data": { "email": "casey@example.com", "phone": "+1-555-0142" }
+    },
+    {
+      "objectApiName": "services",
+      "name": "Cut & color",
+      "data": { "duration_minutes": 90, "price": { "amount": 12000, "currency": "USD" } }
+    },
+    {
+      "objectApiName": "deals",
+      "name": "Casey — Cut & color",
+      "data": { "stage": "booked", "price": { "amount": 12000, "currency": "USD" } },
+      "relations": { "client": "Casey Client", "service": "Cut & color" }
+    }
+  ]
+}

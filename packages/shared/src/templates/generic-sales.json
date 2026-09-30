@@ -1,0 +1,120 @@
+{
+  "id": "generic-sales",
+  "name": "Generic sales",
+  "description": "People, companies, and a standard sales pipeline.",
+  "objects": [
+    {
+      "apiName": "people",
+      "labelSingular": "Person",
+      "labelPlural": "People",
+      "icon": "user",
+      "isSystem": true
+    },
+    {
+      "apiName": "companies",
+      "labelSingular": "Company",
+      "labelPlural": "Companies",
+      "icon": "building-2",
+      "isSystem": true
+    },
+    {
+      "apiName": "deals",
+      "labelSingular": "Deal",
+      "labelPlural": "Deals",
+      "icon": "handshake",
+      "isSystem": true
+    }
+  ],
+  "fields": [
+    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
+    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "people", "apiName": "job_title", "label": "Job title", "type": "text", "position": 2 },
+    {
+      "objectApiName": "people",
+      "apiName": "company",
+      "label": "Company",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    { "objectApiName": "companies", "apiName": "domain", "label": "Domain", "type": "url", "position": 0 },
+    { "objectApiName": "companies", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "companies", "apiName": "industry", "label": "Industry", "type": "text", "position": 2 },
+    { "objectApiName": "deals", "apiName": "amount", "label": "Amount", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "stage",
+      "label": "Stage",
+      "type": "select",
+      "position": 1,
+      "options": {
+        "choices": [
+          { "value": "lead", "label": "Lead" },
+          { "value": "qualified", "label": "Qualified" },
+          { "value": "proposal", "label": "Proposal" },
+          { "value": "won", "label": "Won" },
+          { "value": "lost", "label": "Lost" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "close_date", "label": "Close date", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "company",
+      "label": "Company",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "contact",
+      "label": "Contact",
+      "type": "relation",
+      "position": 4,
+      "options": { "relatedObjectApiName": "people", "cardinality": "one" }
+    }
+  ],
+  "views": [
+    {
+      "objectApiName": "deals",
+      "name": "Pipeline",
+      "columns": ["name", "stage", "amount", "close_date"],
+      "isShared": true
+    }
+  ],
+  "automations": [
+    {
+      "objectApiName": "deals",
+      "name": "Task when deal is won",
+      "trigger": { "type": "stage_changed", "to": "won" },
+      "actions": [
+        {
+          "type": "create_task",
+          "subject": "Send kickoff email for {{name}}",
+          "body": "Deal moved to Won."
+        }
+      ],
+      "isActive": true
+    }
+  ],
+  "sampleRecords": [
+    {
+      "objectApiName": "companies",
+      "name": "Acme Corp",
+      "data": { "domain": "https://acme.example", "industry": "Manufacturing" }
+    },
+    {
+      "objectApiName": "people",
+      "name": "Alex Buyer",
+      "data": { "email": "alex@acme.example", "job_title": "VP Sales" },
+      "relations": { "company": "Acme Corp" }
+    },
+    {
+      "objectApiName": "deals",
+      "name": "Acme — Annual plan",
+      "data": { "stage": "qualified", "amount": { "amount": 1200000, "currency": "USD" } },
+      "relations": { "company": "Acme Corp", "contact": "Alex Buyer" }
+    }
+  ]
+}

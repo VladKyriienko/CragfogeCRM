@@ -1,0 +1,119 @@
+{
+  "id": "agency",
+  "name": "Agency",
+  "description": "Clients, projects, and retainers for creative or consulting agencies.",
+  "objects": [
+    {
+      "apiName": "people",
+      "labelSingular": "Contact",
+      "labelPlural": "Contacts",
+      "icon": "user",
+      "isSystem": true
+    },
+    {
+      "apiName": "companies",
+      "labelSingular": "Client",
+      "labelPlural": "Clients",
+      "icon": "building-2",
+      "isSystem": true
+    },
+    {
+      "apiName": "deals",
+      "labelSingular": "Project",
+      "labelPlural": "Projects",
+      "icon": "briefcase",
+      "isSystem": true
+    }
+  ],
+  "fields": [
+    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
+    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "people", "apiName": "role", "label": "Role", "type": "text", "position": 2 },
+    {
+      "objectApiName": "people",
+      "apiName": "company",
+      "label": "Client",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    { "objectApiName": "companies", "apiName": "website", "label": "Website", "type": "url", "position": 0 },
+    { "objectApiName": "companies", "apiName": "billing_email", "label": "Billing email", "type": "email", "position": 1 },
+    { "objectApiName": "deals", "apiName": "budget", "label": "Budget", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "stage",
+      "label": "Stage",
+      "type": "select",
+      "position": 1,
+      "options": {
+        "choices": [
+          { "value": "pitch", "label": "Pitch" },
+          { "value": "discovery", "label": "Discovery" },
+          { "value": "delivery", "label": "Delivery" },
+          { "value": "retainer", "label": "Retainer" },
+          { "value": "closed", "label": "Closed" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "due_date", "label": "Due date", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "company",
+      "label": "Client",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "contact",
+      "label": "Primary contact",
+      "type": "relation",
+      "position": 4,
+      "options": { "relatedObjectApiName": "people", "cardinality": "one" }
+    }
+  ],
+  "views": [
+    {
+      "objectApiName": "deals",
+      "name": "Project pipeline",
+      "columns": ["name", "stage", "budget", "due_date"],
+      "isShared": true
+    }
+  ],
+  "automations": [
+    {
+      "objectApiName": "deals",
+      "name": "Kickoff task on delivery",
+      "trigger": { "type": "stage_changed", "to": "delivery" },
+      "actions": [
+        {
+          "type": "create_task",
+          "subject": "Schedule kickoff for {{name}}",
+          "body": "Project moved into Delivery."
+        }
+      ],
+      "isActive": true
+    }
+  ],
+  "sampleRecords": [
+    {
+      "objectApiName": "companies",
+      "name": "Northwind Brand",
+      "data": { "website": "https://northwind.example", "billing_email": "ap@northwind.example" }
+    },
+    {
+      "objectApiName": "people",
+      "name": "Sam Marketing",
+      "data": { "email": "sam@northwind.example", "role": "Marketing lead" },
+      "relations": { "company": "Northwind Brand" }
+    },
+    {
+      "objectApiName": "deals",
+      "name": "Website redesign",
+      "data": { "stage": "discovery", "budget": { "amount": 2500000, "currency": "USD" } },
+      "relations": { "company": "Northwind Brand", "contact": "Sam Marketing" }
+    }
+  ]
+}

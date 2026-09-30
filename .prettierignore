@@ -1,0 +1,6 @@
+dist
+node_modules
+coverage
+.turbo
+bun.lock
+apps/web/src/routeTree.gen.ts

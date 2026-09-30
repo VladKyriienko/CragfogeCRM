@@ -1,0 +1,157 @@
+{
+  "id": "real-estate",
+  "name": "Real estate",
+  "description": "Contacts, properties, and a listing pipeline for brokers and agents.",
+  "objects": [
+    {
+      "apiName": "people",
+      "labelSingular": "Contact",
+      "labelPlural": "Contacts",
+      "icon": "user",
+      "isSystem": true
+    },
+    {
+      "apiName": "properties",
+      "labelSingular": "Property",
+      "labelPlural": "Properties",
+      "icon": "home",
+      "isSystem": false
+    },
+    {
+      "apiName": "deals",
+      "labelSingular": "Listing",
+      "labelPlural": "Listings",
+      "icon": "handshake",
+      "isSystem": true
+    }
+  ],
+  "fields": [
+    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
+    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    {
+      "objectApiName": "people",
+      "apiName": "contact_type",
+      "label": "Type",
+      "type": "select",
+      "position": 2,
+      "options": {
+        "choices": [
+          { "value": "buyer", "label": "Buyer" },
+          { "value": "seller", "label": "Seller" },
+          { "value": "tenant", "label": "Tenant" },
+          { "value": "landlord", "label": "Landlord" }
+        ]
+      }
+    },
+    { "objectApiName": "properties", "apiName": "address", "label": "Address", "type": "text", "position": 0, "required": true },
+    { "objectApiName": "properties", "apiName": "city", "label": "City", "type": "text", "position": 1 },
+    { "objectApiName": "properties", "apiName": "bedrooms", "label": "Bedrooms", "type": "number", "position": 2 },
+    { "objectApiName": "properties", "apiName": "list_price", "label": "List price", "type": "currency", "position": 3 },
+    {
+      "objectApiName": "properties",
+      "apiName": "property_type",
+      "label": "Property type",
+      "type": "select",
+      "position": 4,
+      "options": {
+        "choices": [
+          { "value": "house", "label": "House" },
+          { "value": "apartment", "label": "Apartment" },
+          { "value": "land", "label": "Land" },
+          { "value": "commercial", "label": "Commercial" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "asking_price", "label": "Asking price", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "stage",
+      "label": "Stage",
+      "type": "select",
+      "position": 1,
+      "options": {
+        "choices": [
+          { "value": "inquiry", "label": "Inquiry" },
+          { "value": "showing", "label": "Showing" },
+          { "value": "offer", "label": "Offer" },
+          { "value": "under_contract", "label": "Under contract" },
+          { "value": "closed", "label": "Closed" },
+          { "value": "fallen_through", "label": "Fallen through" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "close_date", "label": "Expected close", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "property",
+      "label": "Property",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "properties", "cardinality": "one" }
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "contact",
+      "label": "Contact",
+      "type": "relation",
+      "position": 4,
+      "options": { "relatedObjectApiName": "people", "cardinality": "one" }
+    }
+  ],
+  "views": [
+    {
+      "objectApiName": "deals",
+      "name": "Listing pipeline",
+      "columns": ["name", "stage", "asking_price", "close_date"],
+      "isShared": true
+    },
+    {
+      "objectApiName": "properties",
+      "name": "All properties",
+      "columns": ["name", "address", "city", "list_price", "property_type"],
+      "isShared": true
+    }
+  ],
+  "automations": [
+    {
+      "objectApiName": "deals",
+      "name": "Follow up when under contract",
+      "trigger": { "type": "stage_changed", "to": "under_contract" },
+      "actions": [
+        {
+          "type": "create_task",
+          "subject": "Collect paperwork for {{name}}",
+          "body": "Listing moved to Under contract."
+        }
+      ],
+      "isActive": true
+    }
+  ],
+  "sampleRecords": [
+    {
+      "objectApiName": "people",
+      "name": "Jordan Seller",
+      "data": { "email": "jordan@example.com", "phone": "+1-555-0100", "contact_type": "seller" }
+    },
+    {
+      "objectApiName": "properties",
+      "name": "12 Oak Street",
+      "data": {
+        "address": "12 Oak Street",
+        "city": "Springfield",
+        "bedrooms": 3,
+        "list_price": { "amount": 42500000, "currency": "USD" },
+        "property_type": "house"
+      }
+    },
+    {
+      "objectApiName": "deals",
+      "name": "12 Oak — listing",
+      "data": {
+        "stage": "showing",
+        "asking_price": { "amount": 42500000, "currency": "USD" }
+      },
+      "relations": { "property": "12 Oak Street", "contact": "Jordan Seller" }
+    }
+  ]
+}

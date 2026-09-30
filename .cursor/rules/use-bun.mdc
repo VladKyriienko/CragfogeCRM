@@ -1,0 +1,14 @@
+---
+description: Always use Bun as the package manager and runtime for scripts
+alwaysApply: true
+---
+
+# Always use Bun
+
+- Package manager: **Bun only**. Never use pnpm, npm, or yarn for installs or scripts.
+- Install: `bun install` (CI: `bun install --frozen-lockfile`).
+- Scripts: `bun run <script>` or `bun <script>` from the root / package.
+- Filter a workspace: `bun --filter @cragfoge/<pkg> <script>`.
+- One-off CLIs: `bunx <pkg>` (not `npx` / `pnpm dlx`).
+- Lockfile: commit `bun.lock`. Do not add or keep `pnpm-lock.yaml` / `package-lock.json` / `yarn.lock`.
+- Root `packageManager` must stay on Bun. Do not reintroduce `pnpm-workspace.yaml`.

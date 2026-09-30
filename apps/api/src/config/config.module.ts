@@ -1,0 +1,15 @@
+import { Global, Module } from '@nestjs/common';
+import { ENV } from '../tokens';
+import { loadEnv } from './env';
+
+@Global()
+@Module({
+  providers: [
+    {
+      provide: ENV,
+      useFactory: () => loadEnv(),
+    },
+  ],
+  exports: [ENV],
+})
+export class AppConfigModule {}

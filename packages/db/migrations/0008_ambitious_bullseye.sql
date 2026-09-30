@@ -1,0 +1,2 @@
+ALTER TABLE "field_definitions" DROP CONSTRAINT "field_definitions_object_api_name_unique";--> statement-breakpoint
+CREATE UNIQUE INDEX "field_definitions_object_api_name_active_unique" ON "field_definitions" USING btree ("object_id","api_name") WHERE "field_definitions"."deleted_at" is null;

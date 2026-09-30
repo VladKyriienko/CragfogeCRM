@@ -1,0 +1,123 @@
+{
+  "id": "trades",
+  "name": "Trades",
+  "description": "Customers, jobs, and quotes for plumbers, electricians, and other trades.",
+  "objects": [
+    {
+      "apiName": "people",
+      "labelSingular": "Customer",
+      "labelPlural": "Customers",
+      "icon": "user",
+      "isSystem": true
+    },
+    {
+      "apiName": "companies",
+      "labelSingular": "Site / Company",
+      "labelPlural": "Sites",
+      "icon": "building-2",
+      "isSystem": true
+    },
+    {
+      "apiName": "deals",
+      "labelSingular": "Job",
+      "labelPlural": "Jobs",
+      "icon": "wrench",
+      "isSystem": true
+    }
+  ],
+  "fields": [
+    { "objectApiName": "people", "apiName": "email", "label": "Email", "type": "email", "position": 0 },
+    { "objectApiName": "people", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "people", "apiName": "address", "label": "Address", "type": "text", "position": 2 },
+    {
+      "objectApiName": "people",
+      "apiName": "company",
+      "label": "Site",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    { "objectApiName": "companies", "apiName": "site_address", "label": "Site address", "type": "text", "position": 0 },
+    { "objectApiName": "companies", "apiName": "phone", "label": "Phone", "type": "phone", "position": 1 },
+    { "objectApiName": "deals", "apiName": "quote_amount", "label": "Quote", "type": "currency", "position": 0 },
+    {
+      "objectApiName": "deals",
+      "apiName": "stage",
+      "label": "Stage",
+      "type": "select",
+      "position": 1,
+      "options": {
+        "choices": [
+          { "value": "lead", "label": "Lead" },
+          { "value": "quoted", "label": "Quoted" },
+          { "value": "scheduled", "label": "Scheduled" },
+          { "value": "in_progress", "label": "In progress" },
+          { "value": "invoiced", "label": "Invoiced" },
+          { "value": "paid", "label": "Paid" }
+        ]
+      }
+    },
+    { "objectApiName": "deals", "apiName": "scheduled_for", "label": "Scheduled for", "type": "date", "position": 2 },
+    {
+      "objectApiName": "deals",
+      "apiName": "company",
+      "label": "Site",
+      "type": "relation",
+      "position": 3,
+      "options": { "relatedObjectApiName": "companies", "cardinality": "one" }
+    },
+    {
+      "objectApiName": "deals",
+      "apiName": "contact",
+      "label": "Customer",
+      "type": "relation",
+      "position": 4,
+      "options": { "relatedObjectApiName": "people", "cardinality": "one" }
+    }
+  ],
+  "views": [
+    {
+      "objectApiName": "deals",
+      "name": "Job pipeline",
+      "columns": ["name", "stage", "quote_amount", "scheduled_for"],
+      "isShared": true
+    }
+  ],
+  "automations": [
+    {
+      "objectApiName": "deals",
+      "name": "Prep materials when scheduled",
+      "trigger": { "type": "stage_changed", "to": "scheduled" },
+      "actions": [
+        {
+          "type": "create_task",
+          "subject": "Prep materials for {{name}}",
+          "body": "Job was scheduled."
+        }
+      ],
+      "isActive": true
+    }
+  ],
+  "sampleRecords": [
+    {
+      "objectApiName": "companies",
+      "name": "42 Maple Ave",
+      "data": { "site_address": "42 Maple Ave", "phone": "+1-555-0199" }
+    },
+    {
+      "objectApiName": "people",
+      "name": "Pat Homeowner",
+      "data": { "email": "pat@example.com", "phone": "+1-555-0199", "address": "42 Maple Ave" },
+      "relations": { "company": "42 Maple Ave" }
+    },
+    {
+      "objectApiName": "deals",
+      "name": "Boiler service",
+      "data": {
+        "stage": "quoted",
+        "quote_amount": { "amount": 35000, "currency": "USD" }
+      },
+      "relations": { "company": "42 Maple Ave", "contact": "Pat Homeowner" }
+    }
+  ]
+}

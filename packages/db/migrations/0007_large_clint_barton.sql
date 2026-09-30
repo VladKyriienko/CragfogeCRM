@@ -1,0 +1,2 @@
+ALTER TABLE "workspaces" ADD COLUMN "onboarding_checklist" jsonb DEFAULT '{}'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "workspaces" ADD COLUMN "deletion_scheduled_at" timestamp with time zone;
