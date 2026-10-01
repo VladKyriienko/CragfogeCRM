@@ -3,6 +3,7 @@ import { AppConfigModule } from '../config/config.module';
 import type { Env } from '../config/env';
 import { ENV } from '../tokens';
 import { EMAIL_PROVIDER } from './email.types';
+import { NoopEmailProvider } from './noop-email.provider';
 import { SmtpEmailProvider } from './smtp-email.provider';
 
 @Global()
@@ -12,7 +13,8 @@ import { SmtpEmailProvider } from './smtp-email.provider';
     {
       provide: EMAIL_PROVIDER,
       inject: [ENV],
-      useFactory: (env: Env) => new SmtpEmailProvider(env),
+      useFactory: (env: Env) =>
+        env.NODE_ENV === 'test' ? new NoopEmailProvider() : new SmtpEmailProvider(env),
     },
   ],
   exports: [EMAIL_PROVIDER],
