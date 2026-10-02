@@ -3,18 +3,27 @@ import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres, { type Sql } from 'postgres';
-import { DEFAULT_ADMIN_DATABASE_URL, DEFAULT_MIGRATOR_DATABASE_URL } from './defaults';
+import {
+  DEFAULT_ADMIN_DATABASE_URL,
+  DEFAULT_APP_DATABASE_URL,
+  DEFAULT_MIGRATOR_DATABASE_URL,
+} from './defaults';
 import { findRepoRoot, loadDotEnv } from './load-dot-env';
 
-const ROLE_STATEMENTS = [
-  "create role crm_migrator login password 'crm_migrator' nosuperuser nocreatedb nocreaterole nobypassrls",
-  "create role crm_app login password 'crm_app' nosuperuser nocreatedb nocreaterole nobypassrls",
-] as const;
+const ROLE_OPTIONS = 'login nosuperuser nocreatedb nocreaterole nobypassrls';
 
-const ROLE_ALTER_STATEMENTS = [
-  "alter role crm_migrator with login password 'crm_migrator' nosuperuser nocreatedb nocreaterole nobypassrls",
-  "alter role crm_app with login password 'crm_app' nosuperuser nocreatedb nocreaterole nobypassrls",
-] as const;
+export function quoteLiteral(value: string): string {
+  return `'${value.replaceAll("'", "''")}'`;
+}
+
+/** The role password is whatever the connection URL for that role carries. */
+export function rolePasswordFromUrl(url: string): string {
+  const password = decodeURIComponent(new URL(url).password);
+  if (!password) {
+    throw new Error('Database URL for a crm role must include a password');
+  }
+  return password;
+}
 
 const ADMIN_GRANT_STATEMENTS = [
   'revoke create on schema public from public',
@@ -52,20 +61,24 @@ async function connectWithRetry(url: string): Promise<Sql> {
   throw new Error(`Could not connect to Postgres: ${safeMessage(lastError)}`);
 }
 
-async function ensureRoles(admin: Sql): Promise<void> {
+async function ensureRoles(
+  admin: Sql,
+  passwords: { migrator: string; app: string },
+): Promise<void> {
   const existing = await admin<{ rolname: string }[]>`
     select rolname from pg_roles where rolname in ('crm_migrator', 'crm_app')
   `;
   const names = new Set(existing.map((row) => row.rolname));
 
-  if (!names.has('crm_migrator')) {
-    await admin.unsafe(ROLE_STATEMENTS[0]);
-  }
-  if (!names.has('crm_app')) {
-    await admin.unsafe(ROLE_STATEMENTS[1]);
-  }
-  for (const statement of ROLE_ALTER_STATEMENTS) {
-    await admin.unsafe(statement);
+  const roles = [
+    ['crm_migrator', passwords.migrator],
+    ['crm_app', passwords.app],
+  ] as const;
+  for (const [role, password] of roles) {
+    const verb = names.has(role) ? 'alter' : 'create';
+    await admin.unsafe(
+      `${verb} role ${role} with ${ROLE_OPTIONS} password ${quoteLiteral(password)}`,
+    );
   }
   for (const statement of ADMIN_GRANT_STATEMENTS) {
     await admin.unsafe(statement);
@@ -78,11 +91,16 @@ export async function prepareDatabase(): Promise<void> {
 
   const adminUrl = process.env.DATABASE_URL_ADMIN ?? DEFAULT_ADMIN_DATABASE_URL;
   const migratorUrl = process.env.DATABASE_URL_MIGRATOR ?? DEFAULT_MIGRATOR_DATABASE_URL;
+  const appUrl = process.env.DATABASE_URL ?? DEFAULT_APP_DATABASE_URL;
+  const passwords = {
+    migrator: rolePasswordFromUrl(migratorUrl),
+    app: rolePasswordFromUrl(appUrl),
+  };
   const packageRoot = resolve(repoRoot, 'packages/db');
 
   const admin = await connectWithRetry(adminUrl);
   try {
-    await ensureRoles(admin);
+    await ensureRoles(admin, passwords);
   } finally {
     await admin.end({ timeout: 5 });
   }
