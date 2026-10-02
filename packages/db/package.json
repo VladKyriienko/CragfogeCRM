@@ -9,6 +9,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "generate": "drizzle-kit generate",
     "migrate": "bun scripts/migrate.ts",
     "migrate:lock": "bun scripts/migrate-with-lock.ts",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.2",
     "drizzle-kit": "^0.31.11",
     "tsx": "^4.23.15",
     "typescript": "6.0.3",

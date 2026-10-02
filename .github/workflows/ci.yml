@@ -45,12 +45,21 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run lint
-      - run: bun run test
+      - run: bun run test:coverage
         env:
           DATABASE_URL: postgresql://crm_app:crm_app@localhost:5432/crm
           DATABASE_URL_MIGRATOR: postgresql://crm_migrator:crm_migrator@localhost:5432/crm
           DATABASE_URL_ADMIN: postgresql://postgres:postgres@localhost:5432/crm
           REDIS_URL: redis://localhost:6379
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: |
+            apps/*/coverage
+            packages/*/coverage
+          if-no-files-found: ignore
+          retention-days: 14
       # Playwright e2e (`bun --filter @cragfoge/web e2e`) intentionally does not
       # run in CI yet. Unlike the unit/e2e-via-Supertest tests above, it needs a
       # live API + web dev server pair (not just DB/Redis services), a MinIO +

@@ -20,6 +20,7 @@
     "lint": "prettier --check . && bunx turbo run lint",
     "format": "prettier --write .",
     "test": "bun run db:migrate && bunx turbo run test",
+    "test:coverage": "bun run db:migrate && bunx turbo run test:coverage",
     "db:migrate": "bun --filter @cragfoge/db migrate"
   },
   "devDependencies": {
