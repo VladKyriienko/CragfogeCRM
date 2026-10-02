@@ -25,6 +25,7 @@ import { RolesModule } from './roles/roles.module';
 import { SearchModule } from './search/search.module';
 import { SetupModule } from './setup/setup.module';
 import { StorageModule } from './storage/storage.module';
+import { LOG_REDACT_PATHS, LOG_SERIALIZERS } from './common/logging';
 import { ENV } from './tokens';
 import { ViewsModule } from './views/views.module';
 import { WebhooksModule } from './webhooks/webhooks.module';
@@ -49,7 +50,8 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
       useFactory: (env: Env) => ({
         pinoHttp: {
           level: env.NODE_ENV === 'test' ? 'silent' : env.LOG_LEVEL,
-          redact: ['req.headers.authorization', 'req.headers.cookie'],
+          redact: LOG_REDACT_PATHS,
+          serializers: LOG_SERIALIZERS,
           autoLogging: env.NODE_ENV !== 'test',
           transport:
             env.NODE_ENV === 'development'
