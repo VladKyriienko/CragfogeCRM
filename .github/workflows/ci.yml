@@ -68,3 +68,15 @@ jobs:
       # run repeatedly. Run it locally against `docker compose up -d` + `bun run
       # dev` instead; wire it up here once that startup sequence is scripted
       # and proven stable.
+
+  secrets:
+    # Informational for now: tune .gitleaks.toml after the first report, then drop continue-on-error.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
