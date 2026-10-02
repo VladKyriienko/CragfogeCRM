@@ -1,0 +1,84 @@
+---
+description: Phased improvement plan for Cragfoge CRM. Attach with @improvement-plan and say "Run Phase N".
+alwaysApply: false
+---
+
+# Role
+
+You are a senior full-stack engineer working on Cragfoge CRM (Bun + Turborepo monorepo: apps/api NestJS, apps/web React/Vite, packages/db Drizzle, packages/shared Zod). Follow `.cursor/rules/crm-project.mdc` and `.cursor/rules/use-bun.mdc` strictly. Also read `AGENTS.md` (Turborepo: read the installed turbo package docs before changing turbo config).
+
+# Goal
+
+Implement the improvement plan below, ONE PHASE AT A TIME. I will tell you which phase to run. Do not start the next phase on your own.
+
+# Working rules
+
+1. Before changing anything, inspect the real code. Items marked "VERIFY FIRST" are hypotheses, not facts. Report what you found, then act. Never assume.
+2. Work in small, reviewable steps: one task = one commit (Conventional Commits, e.g. `test(db): enforce RLS on all workspace tables`). Branch name: `chore/phase-<n>-<slug>`. Never push to `main`.
+3. After every task run: `bun run typecheck && bun run lint && bun run test`. Fix failures before moving on. If a failure is pre-existing, say so and do not hide it.
+4. Never: disable RLS, skip/disable/delete tests to get green, edit an already-applied migration, use `any`, log secrets or personal data, add dependencies without justifying them in the commit message, or add abstractions that the project rules call premature.
+5. Keep public API behavior unchanged during refactors (Phase 3). Characterization tests first, refactor second.
+6. Every user-facing string uses `t('...')` with keys in `apps/web/src/locales/en.json`. Keep `.env.example` and `deploy/.env.selfhost.example` in sync with any env change.
+7. If a task is ambiguous or needs a product decision, stop and ask me with 2-3 concrete options and a recommendation. Do not guess.
+8. At the end of each phase output: (a) what was done per task, (b) what was found by VERIFY FIRST items, (c) what was NOT done and why, (d) commands I should run to check, (e) risks.
+
+# Phase 0 - Baseline and process
+
+- 0.1 Run typecheck/lint/test, record the baseline (counts, duration, failures) in `docs/baseline.md`.
+- 0.2 Add coverage reporting (vitest v8 coverage) for apps/api, apps/web, packages/\*; upload as CI artifact; do NOT enforce thresholds yet.
+- 0.3 Add `.github/pull_request_template.md` (what/why, how verified, risks, screenshots for UI).
+- 0.4 Add Dependabot config (weekly, grouped by ecosystem: npm/bun, github-actions, docker).
+
+# Phase 1 - Security and configuration
+
+- 1.1 Replace `bitnamilegacy/minio` in `docker-compose.yml` and `deploy/docker-compose.selfhost.yml` with a maintained, anonymously pullable MinIO image. Pin image tags (postgres, redis, minio, mailpit) to specific versions. Verify `docker compose config` is valid; update README mentions.
+- 1.2 In `apps/api/src/config/env.ts`: when `NODE_ENV=production`, reject weak/default values (AUTH_SECRET < 32 chars or a placeholder, default DB passwords, `minioadmin`, default S3 secret). Add cases to `env.spec.ts`. Update both env example files with warnings.
+- 1.3 RLS audit. VERIFY FIRST: list every table with `workspace_id`, whether RLS is enabled AND forced, and the policies per command. Then add an automated test that queries `pg_class`/`information_schema` and fails if any `workspace_id` table lacks RLS/FORCE or policies (with an explicit, commented allow-list for intentional exceptions like audit_logs). Also audit background workers (exports, automations, webhooks, purge, date-scan) to confirm they set the tenant context. Report gaps; fix them via a NEW migration (drizzle-kit generate), never by editing old ones.
+- 1.4 Cross-tenant tests: VERIFY FIRST which modules lack a "workspace A cannot read/write workspace B" test (records, files, views, webhooks, api-keys, exports, activities, search). Add the missing ones.
+- 1.5 HTTP hardening. VERIFY FIRST: helmet headers, CORS limited to WEB_ORIGIN, body size limit, upload size/MIME limits, cookie flags (secure/httpOnly/sameSite), throttling on sign-in, password reset, email verify, TOTP. Fix gaps with tests.
+- 1.6 Logging: VERIFY FIRST that pino redacts authorization, cookies, tokens, passwords, and request bodies with personal data. Add redaction + a test. Add a secret-scanning step (gitleaks action) to CI.
+- 1.7 Run the `security-review` skill/checklist over the repo and create `docs/security-findings.md` with severity and a fix status. Fix High/Critical items in this phase.
+
+# Phase 2 - Testing
+
+- 2.1 Playwright in CI: create `scripts/e2e.sh` (start compose deps, migrate, start API+web, wait for /health, run tests). Add a separate `e2e` job in `.github/workflows/ci.yml` with Postgres, Redis, MinIO, Mailpit, Playwright browser cache, trace/video artifacts on failure. Solve the rate-limiter problem with a test-only env override (never disable the limiter in production code paths). Run it locally 5 times to prove it is stable.
+- 2.2 Permission matrix tests (role -> object permission -> field visibility -> record ownership) as a table-driven suite against the real guards/services.
+- 2.3 Unit/integration tests for the dynamic Zod schema built from `field_definitions` (every field type, required/optional, invalid input, boundary values) and for `filter-sql` including injection attempts. Add property-based tests (fast-check) for filter-sql and automation templates.
+- 2.4 Queue/worker tests: idempotency on re-delivery, retry with backoff, failure paths for exports, webhooks, automations (include loop protection).
+- 2.5 Stripe webhook tests: duplicate events, out-of-order events, invalid signature; license expiry and seat-limit behavior.
+- 2.6 Migration tests: empty DB -> all migrations -> schema matches Drizzle schema (`drizzle-kit check`); upgrade test N-1 -> N with seeded data.
+- 2.7 Check whether K6 scripts exist and run. Add scenarios (records list with filters on 100k rows, search, export) and write budgets to `docs/performance.md`. Do not fail CI on them yet.
+- 2.8 After the above, set coverage thresholds in CI to (current coverage - 2 pp) per package and for critical modules (records, metadata, automations, billing, roles) target 70% line coverage.
+
+# Phase 3 - Code structure (only after Phase 2 is merged)
+
+- 3.1 `records.service.ts` (~720 lines): VERIFY FIRST the natural seams. Split into validator, query builder, permission/field-visibility, orchestration. Public service API and HTTP behavior stay identical; all existing tests stay green without modification. Same analysis for `automations.service.ts` and `metadata.service.ts`; refactor only where seams are clear.
+- 3.2 Repositories: VERIFY FIRST how much services use Drizzle directly. Introduce repositories only for records, metadata, workspaces. For simple CRUD modules keep as is and record the exception in `.cursor/rules/crm-project.mdc` (ask me before editing that file).
+- 3.3 Pipelines: VERIFY FIRST how pipelines/stages are modelled today (pick-list field vs dedicated). Write a short analysis and ask me which option to take BEFORE implementing anything.
+- 3.4 Remove remaining `any` (use `unknown` + Zod). Turn on `@typescript-eslint/no-explicit-any` as error.
+
+# Phase 4 - Web client
+
+- 4.1 Loading/error/empty states on every page; optimistic updates for quick edits via TanStack Query; virtualize big tables (TanStack Virtual).
+- 4.2 Accessibility: add axe checks in Playwright for key pages; fix keyboard navigation, focus management in dialogs, contrast issues.
+- 4.3 i18n: lint script for missing/unused keys in `en.json`; format dates/numbers via `Intl` using workspace timezone; add a `uk.json` as proof that the architecture supports a second language.
+- 4.4 Bundle: lazy-load routes, add a bundle-size budget check in CI.
+
+# Phase 5 - Observability and operations
+
+- 5.1 Structured logs with requestId/workspaceId; optional Sentry via env; Prometheus `/metrics` (latency, BullMQ queue depth, job failures); split `/health` into liveness/readiness (DB, Redis, S3).
+- 5.2 Restore script + documented procedure in `deploy/BACKUP.md`; a CI or scheduled job that proves backup -> restore works.
+- 5.3 Release pipeline: build and publish images to GHCR on tags, CHANGELOG from Conventional Commits, smoke test of self-host upgrade (previous image -> new image).
+- 5.4 Dependency and image scanning (trivy or equivalent) in CI; generate SBOM.
+
+# Phase 6 - Documentation (runs alongside every phase)
+
+Create `docs/`: `architecture.md`, `data-model.md`, `permissions.md`, `rls.md` (how tenant context works and the checklist for adding a new table), `adr/` (Better Auth, jsonb over EAV, RLS, Bun), `CONTRIBUTING.md`, `SECURITY.md`. Keep them short, accurate, and derived from real code.
+
+# Phase 7 - Product features (each needs my approval before starting)
+
+CSV import, email integration, tasks/reminders, reports/dashboards, PWA/mobile, deduplication/merge, Resend email provider. Before each: VERIFY FIRST whether it already exists partially, then propose a design and wait for my OK.
+
+# Start
+
+Confirm you have read AGENTS.md and the two rules files, summarize in 5 lines the current state of the repo, and wait for my instruction: "Run Phase N".
