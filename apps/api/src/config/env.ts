@@ -90,6 +90,12 @@ const baseEnvSchema = z.object({
 });
 
 export const envSchema = baseEnvSchema.superRefine((data, ctx) => {
+  if (data.NODE_ENV === 'production') {
+    for (const issue of productionSecretIssues(data)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [issue.path], message: issue.message });
+    }
+  }
+
   if (data.DEPLOYMENT_MODE === 'cloud') {
     if (!data.STRIPE_SECRET_KEY) {
       ctx.addIssue({
@@ -126,6 +132,62 @@ export const envSchema = baseEnvSchema.superRefine((data, ctx) => {
     });
   }
 });
+
+const DEV_AUTH_SECRET = 'dev-only-auth-secret-change-me-32chars';
+const PLACEHOLDER_PATTERN = /change-?me|dev-only|changeit|password123/i;
+
+function databasePassword(url: string): string | undefined {
+  try {
+    return decodeURIComponent(new URL(url).password);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Production must not boot with the values that ship in `.env.example`, compose files
+ * and docs. Checked after defaults are applied, so omitting a variable is also caught.
+ */
+function productionSecretIssues(data: ParsedEnv): { path: string; message: string }[] {
+  const issues: { path: string; message: string }[] = [];
+  const weak = (path: string, message: string) => issues.push({ path, message });
+
+  if (data.AUTH_SECRET === DEV_AUTH_SECRET || PLACEHOLDER_PATTERN.test(data.AUTH_SECRET)) {
+    weak('AUTH_SECRET', 'Must be a unique random secret in production (not a placeholder)');
+  }
+
+  const dbPassword = databasePassword(data.DATABASE_URL);
+  if (
+    dbPassword === 'crm_app' ||
+    (dbPassword !== undefined && PLACEHOLDER_PATTERN.test(dbPassword))
+  ) {
+    weak('DATABASE_URL', 'The crm_app password must be changed in production');
+  }
+
+  if (
+    data.S3_SECRET_ACCESS_KEY === 'minioadmin' ||
+    PLACEHOLDER_PATTERN.test(data.S3_SECRET_ACCESS_KEY)
+  ) {
+    weak('S3_SECRET_ACCESS_KEY', 'Must not use the default MinIO password in production');
+  }
+
+  return issues;
+}
+
+/** Non-fatal production findings, logged once at startup. */
+export function productionWarnings(env: Env): string[] {
+  const warnings: string[] = [];
+  if (
+    env.NODE_ENV === 'production' &&
+    env.DEPLOYMENT_MODE === 'selfhost' &&
+    env.LICENSE_PUBLIC_KEY === DEV_LICENSE_PUBLIC_KEY
+  ) {
+    warnings.push(
+      'LICENSE_PUBLIC_KEY is the development key whose private key is public; anyone can mint licences for this install.',
+    );
+  }
+  return warnings;
+}
 
 type ParsedEnv = z.infer<typeof baseEnvSchema>;
 
