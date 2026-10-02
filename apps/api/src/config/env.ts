@@ -22,6 +22,12 @@ const baseEnvSchema = z.object({
     z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   ),
   WEB_ORIGIN: z.preprocess(emptyToUndefined, z.string().min(1).default('http://localhost:5173')),
+  /**
+   * Number of reverse proxies in front of the API (Express `trust proxy` hop count).
+   * 0 when the API is exposed directly; 1 behind the bundled nginx. Needed so rate limits
+   * see the client IP instead of the proxy's.
+   */
+  TRUST_PROXY: z.preprocess(emptyToUndefined, z.coerce.number().int().min(0).max(10).default(0)),
   API_BASE_URL: z.preprocess(emptyToUndefined, z.string().min(1).default('http://localhost:3000')),
   AUTH_SECRET: z.preprocess(
     emptyToUndefined,

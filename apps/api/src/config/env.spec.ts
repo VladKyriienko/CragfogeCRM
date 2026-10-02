@@ -102,3 +102,15 @@ describe('loadEnv production secrets', () => {
     expect(productionWarnings(loadEnv(production))).toEqual([]);
   });
 });
+
+describe('loadEnv TRUST_PROXY', () => {
+  it('defaults to no proxy and accepts a hop count', () => {
+    expect(loadEnv(base).TRUST_PROXY).toBe(0);
+    expect(loadEnv({ ...base, TRUST_PROXY: '1' }).TRUST_PROXY).toBe(1);
+  });
+
+  it('rejects negative or non-numeric values', () => {
+    expect(() => loadEnv({ ...base, TRUST_PROXY: '-1' })).toThrow(/TRUST_PROXY/);
+    expect(() => loadEnv({ ...base, TRUST_PROXY: 'yes' })).toThrow(/TRUST_PROXY/);
+  });
+});

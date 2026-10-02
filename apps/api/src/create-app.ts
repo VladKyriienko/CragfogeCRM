@@ -3,7 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
 import { toNodeHandler } from 'better-auth/node';
-import type { Express, Request, Response } from 'express';
+import type { Express, Request, RequestHandler, Response } from 'express';
+import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { AUTH } from './auth/auth.tokens';
@@ -27,6 +28,20 @@ function initSentry(dsn: string | undefined, environment: string): void {
   sentryInitialized = true;
 }
 
+/**
+ * The API only serves JSON, so its CSP forbids everything. Swagger UI under /docs needs
+ * inline scripts and styles, so it gets the other helmet defaults without a CSP.
+ */
+function securityHeaders(): RequestHandler {
+  const api = helmet({
+    contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+    crossOriginResourcePolicy: { policy: 'same-site' },
+  });
+  const docs = helmet({ contentSecurityPolicy: false });
+  return (req, res, next) =>
+    req.path.startsWith('/docs') ? docs(req, res, next) : api(req, res, next);
+}
+
 export async function createApp(): Promise<INestApplication> {
   const env = loadEnv();
   initSentry(env.SENTRY_DSN, env.NODE_ENV);
@@ -43,6 +58,11 @@ export async function createApp(): Promise<INestApplication> {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   const expressApp = app.getHttpAdapter().getInstance() as Express;
+  expressApp.disable('x-powered-by');
+  if (env.TRUST_PROXY > 0) {
+    expressApp.set('trust proxy', env.TRUST_PROXY);
+  }
+  expressApp.use(securityHeaders());
   const { json, urlencoded } = await import('express');
   const auth = app.get<AuthInstance>(AUTH);
   const authHandler = toNodeHandler(auth);

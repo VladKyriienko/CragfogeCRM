@@ -60,6 +60,8 @@ services:
       - .env.selfhost
     environment:
       PROCESS_ROLE: api
+      # One reverse proxy (nginx) in front: rate limits must see the client IP, not nginx's.
+      TRUST_PROXY: 1
       RUN_MIGRATIONS_ON_START: 'true'
       NODE_ENV: production
       API_HOST: 0.0.0.0

@@ -27,6 +27,7 @@ function envFor(mode: 'cloud' | 'selfhost'): Env {
     LOG_LEVEL: 'silent',
     WEB_ORIGIN: 'http://localhost:5173',
     API_BASE_URL: 'http://localhost:3000',
+    TRUST_PROXY: 0,
     AUTH_SECRET: 'dev-only-auth-secret-change-me-32chars',
     DATABASE_URL: process.env.DATABASE_URL ?? 'postgresql://crm_app:crm_app@localhost:5432/crm',
     REDIS_URL: 'redis://localhost:6379',
